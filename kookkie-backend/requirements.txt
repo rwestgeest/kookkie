@@ -1,0 +1,20 @@
+## production requirements
+
+Flask==2.2.2
+Flask-SQLAlchemy==3.0.3
+Flask-Migrate==4.0.3
+Flask-Cors==3.0.10
+Flask-Login==0.6.2
+Flask-Wtf==1.1.1
+Jinja2==3.1.2
+
+passlib==1.7.4
+paste==3.5.0
+pyyaml==6.0
+sqlalchemy==2.0.1
+statsd==4.0.1
+waitress==2.1.2
+werkzeug==2.2.2
+
+quiltz-domain==0.7.3
+quiltz-messaging==0.3.3
