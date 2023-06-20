@@ -1,10 +1,30 @@
 <html>
-  <head>
-    <link rel="stylesheet" href="helloworld.css"/>
-    <script type="module" src="./helloworld.js"></script>
-  </head>
-  <body>
-    
-    <hello-world name="World"/>
-  </body>
+
+<head>
+  <link rel="stylesheet" href="helloworld.css" />
+  <script type="module" src="./helloworld.js"></script>
+</head>
+
+<body>
+  <template id="hello-world">
+
+    <style>
+      p {
+        text-align: center;
+        font-weight: normal;
+        padding: 0.5em;
+        margin: 1px 0;
+        background-color: #eee;
+        border: 1px solid #666;
+      }
+    </style>
+
+    <p class="hw-text"></p>
+    <p class="hw-text"></p>
+    <p class="hw-text"></p>
+
+  </template>
+  <hello-world name="World" />
+</body>
+
 </html>

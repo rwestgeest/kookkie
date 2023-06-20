@@ -11,23 +11,11 @@ class HelloWorld extends HTMLElement {
 
     render() {
         const shadow = this.attachShadow({ mode: 'closed' });
-        shadow.innerHTML = /* html */`
-            <style>
-                p {
-                    text-align: center;
-                    font-weight: normal;
-                    padding: 1em;
-                    margin: 0 0 2em 0;
-                    background-color: #eee;
-                    border: 1px solid #666;
-                }
-                :host {
-                    transform: rotate(180deg);
-                }
-            </style>
-            <p>Hello ${ this.name }!</p>
-        `;
-
+        const template = document.getElementById('hello-world').content.cloneNode(true);
+        const hwMsg = `Hello ${this.name}`;
+        Array.from( template.querySelectorAll('.hw-text') )
+            .forEach(n => n.textContent = hwMsg);
+        shadow.append(template);
     }
 
 
