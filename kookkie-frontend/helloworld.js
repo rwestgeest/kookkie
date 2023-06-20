@@ -10,6 +10,7 @@ class HelloWorld extends HTMLElement {
 
 
     render() {
+        
         const shadow = this.attachShadow({ mode: 'closed' });
         const template = document.getElementById('hello-world').content.cloneNode(true);
         const hwMsg = `Hello ${this.name}`;
