@@ -1,4 +1,14 @@
-hello-world div h1 {
-  font-weight: bold;
-  color: rgb(128, 111, 254);
+body {
+    font-family: sans-serif;
+}
+
+hello-world {
+    font-weight: bold;
+    /* ignored */
+    color: red;
+}
+
+/* ignored */
+hello-world p {
+    background-color: red;
 }
