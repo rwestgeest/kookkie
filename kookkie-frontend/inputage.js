@@ -1,4 +1,4 @@
-class InputAge extends HTMLElement {
+export class InputAge extends HTMLElement {
 
     static formAssociated = true;
 
@@ -38,4 +38,3 @@ class InputAge extends HTMLElement {
     }
 }
 
-customElements.define('input-age', InputAge);
