@@ -22,7 +22,7 @@ def anOpenKookkieSession(**kwargs) -> KookkieSession:
 
 def aValidKookkieSessionCreatedEvent(**kwargs) -> KookkieSessionCreated:
     valid_args = dict(timestamp=Clock.fixed().now(), kookkie_session=aValidKookkieSession())
-    return KookkieSessionCreated(**{**valid_args, **kwargs})
+    return KookkieSessionCreated(**{**valid_args, **kwargs})  # type: ignore
 
 
 def aValidKookkieParticipant(**kwargs) -> KookkieParticipant:

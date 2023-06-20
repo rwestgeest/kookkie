@@ -14,7 +14,7 @@ class KookkieSessionsRepository(ABC):
         pass
         
     @abstractmethod
-    def by_id_with_result(self, kookkie_session_id: ID, kook: Kook) -> Result:
+    def by_id_with_result(self, kookkie_session_id: ID, kook: Optional[Kook]) -> Result:
         pass
 
     @abstractmethod

@@ -1,18 +1,28 @@
 from dataclasses import dataclass, replace, field
-from typing import Dict
+from typing import Dict, Optional
 
 from quiltz.domain import ID, IDGenerator, Success, validate, presence_of, max_length_of, email_validity_of, anonymize
 from quiltz.domain.results import Result, Failure
 
+from .password_reset_token import PasswordResetToken
 
-@dataclass
+
+@dataclass(init=False)
 class Kook:
     id: ID
     email: str
     name: str
-    hashed_password: str = None
-    password_reset_token: str = None
-    is_admin: bool = False
+    hashed_password: str
+    password_reset_token: Optional[PasswordResetToken]
+    is_admin: bool
+
+    def __init__(self, id: ID, name: str, hashed_password:str, email:str, password_reset_token:Optional[PasswordResetToken]=None, is_admin:bool=False):
+        self.id = id
+        self.name = name
+        self.email = email
+        self.hashed_password = hashed_password
+        self.password_reset_token = password_reset_token
+        self.is_admin = is_admin
 
     @property
     def username(self):
@@ -64,7 +74,7 @@ class KookCreator:
     def __init__(self, id_generator: IDGenerator = IDGenerator()):
         self.id_generator=id_generator
 
-    def create_with_id(self, name:str =None, email:str=None, isAdmin=False):
+    def create_with_id(self, name=None, email=None, isAdmin=False):
         return validate(
             presence_of('email', email),
             presence_of('name', name),
@@ -72,7 +82,7 @@ class KookCreator:
             email_validity_of('email', email),
             max_length_of('name', name, 80)
         ).map(lambda valid_parameters:
-              Success(kook=Kook(id=self.id_generator.generate_id(), name=name, email=email.strip(), is_admin=isAdmin))
+              Success(kook=Kook(id=self.id_generator.generate_id(), name=name, email=email.strip(), is_admin=isAdmin, hashed_password=None))
               )
 
 @dataclass
