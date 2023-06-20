@@ -13,9 +13,7 @@ class InputAge extends HTMLElement {
     // set form value
 
     setValue(v) {
-
-        this.value = v;
-
+        this.value = v  ;
         this.internals.setFormValue(v);
 
     }
