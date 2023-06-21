@@ -1,42 +1,27 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="app/helloworld.css" />
-  <script type="module" src="app/app.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="app/assets/main.css">
+<!--  <link rel="icon" href="<%= BASE_URL %>favicon.ico">-->
+<!--  <link rel="icon" type="image/png" href="/assets/favicon-16x16.png" sizes="16x16">-->
+<!--  <link rel="icon" type="image/png" href="/assets/favicon-32x32.png" sizes="32x32">-->
+<!--  <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96">-->
+  <title>Kookkie</title>
+
 </head>
 
 <body>
-  <template id="hello-world">
+  <script type="module" src="app/app.js"></script>
+  <header class="header">
+    <h1 class="logo header__logo">
+      <a href="#/">Kookkie</a>
+    </h1>
+  </header>
 
-    <style>
-      p {
-        text-align: center;
-        font-weight: normal;
-        padding: 0.5em;
-        margin: 1px 0;
-        background-color: #eee;
-        border: 1px solid #666;
-      }
-    </style>
-
-    <p class="hw-text"></p>
-
-  </template>
-  <hello-world name="World"></hello-world>
-
-  <get-people></get-people>
-
-  <form id="myform">
-
-    <input type="text" name="your-name" placeholder="name" />
-  
-    <input-age name="your-age"></input-age>
-  
-    <button>submit</button>
-  
-  </form>
-
-  <div id="app"></div>
+  <div id="router-view"></div>
 
 </body>
 

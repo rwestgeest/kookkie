@@ -43,6 +43,6 @@ export class PageThatRenders {
         this.contentToRender = contentToRender;
     }
     render() {
-        document.querySelector("div#app").innerHTML = this.contentToRender
+        document.querySelector("#router-view").innerHTML = this.contentToRender
     }
 }
