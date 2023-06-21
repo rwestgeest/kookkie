@@ -1,0 +1,45 @@
+resource "aws_cloudwatch_metric_alarm" "fivehundred_errors_on_lb" {
+    actions_enabled           = true
+    alarm_actions             = [
+        "arn:aws:sns:eu-central-1:525595969507:Errors-in-kookkie",
+    ]
+    alarm_description         = "Created from EC2 Console"
+    alarm_name                = "awsapplicationelb-app-kookkie-load-balancer-4ffa99998b91df54-High-HTTP-5XXs"
+    comparison_operator       = "GreaterThanOrEqualToThreshold"
+    datapoints_to_alarm       = 1
+    dimensions                = {
+        "LoadBalancer" = "app/kookkie-load-balancer/4ffa99998b91df54"
+    }
+    evaluation_periods        = 1
+    insufficient_data_actions = []
+    metric_name               = "HTTPCode_Target_5XX_Count"
+    namespace                 = "AWS/ApplicationELB"
+    ok_actions                = []
+    period                    = 60
+    statistic                 = "Sum"
+    threshold                 = 1
+    treat_missing_data        = "notBreaching"
+}
+
+resource "aws_cloudwatch_metric_alarm" "fourhunred_errors_on_lb" {
+    actions_enabled           = true
+    alarm_actions             = [
+        "arn:aws:sns:eu-central-1:525595969507:Errors-in-kookkie",
+    ]
+    alarm_description         = "Created from EC2 Console"
+    alarm_name                = "TooMany4XX"
+    comparison_operator       = "GreaterThanOrEqualToThreshold"
+    datapoints_to_alarm       = 1
+    dimensions                = {
+        "LoadBalancer" = "app/kookkie-load-balancer/4ffa99998b91df54"
+    }
+    evaluation_periods        = 1
+    insufficient_data_actions = []
+    metric_name               = "HTTPCode_Target_4XX_Count"
+    namespace                 = "AWS/ApplicationELB"
+    ok_actions                = []
+    period                    = 60
+    statistic                 = "Sum"
+    threshold                 = 10
+    treat_missing_data        = "notBreaching"
+}
