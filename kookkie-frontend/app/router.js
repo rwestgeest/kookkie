@@ -13,6 +13,7 @@ class Route {
 export class Router {
     constructor() {
         this.routes = [];
+        this._default_path = "#/"
     }
 
     currentLocation() {
@@ -28,11 +29,16 @@ export class Router {
         currentRoute.renderPage();
     }
 
+    default(path) {
+        this._default_path = path;
+        return this;
+    }
+
     start() {
         window.addEventListener('hashchange', () => {
             this.renderPage()
         }, false);
-        window.location.hash = "#/"
+        window.location.hash = this._default_path;
         this.renderPage();
         return this;
     }

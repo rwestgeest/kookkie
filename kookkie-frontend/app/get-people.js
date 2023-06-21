@@ -1,26 +1,12 @@
-
+import { Component } from './components/component.js'
 export class HttpBasedPersonRepository  {
     async getPerson(id) {
         return fetch("/api/people/1.json").then(r => r.json());
     }
 }
 
-class MyHTMLElement extends HTMLElement {
-    constructor() {
-        super();
-        this._shadowRoot = this.attachShadow({ mode: "closed" });
-    }
-    render() {
-        this._shadowRoot.innerHTML = this.html()
-    }
-    attributeChangedCallback(property, oldValue, newValue) {
-        if (oldValue === newValue) return;
-        this.render();
-    }
-}
-
 export function GetPeople(personRepository) {
-    return class extends MyHTMLElement {
+    return class extends Component {
         static get observedAttributes() {
             return ['person'];
         }
