@@ -1,0 +1,9 @@
+remote.secrets
+venv
+.cache
+.local
+*.log
+terraform.tfvars
+.terraform.lock.hcl
+__pycache__
+
