@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, request, make_response
 from app.domain import ID, KookkieSession
 from app.domain.commands import *
@@ -28,5 +30,17 @@ class KookkieSessionRoutes(object):
                                   .with_csrf())
         return route
 
+
+        @route('/api/kookkie-sessions', methods=['GET'], login_required=True)
+        def all_kookkie_sessions():
+            return build_response(from_result_of(Success(kookkies=[]))
+                    .on_success(lambda result: ([dict(
+                id = IDGenerator().generate_id(),
+                date = str(datetime.date.today()),
+                name = "Lekker eten met anton",
+                kook_name="anton",
+
+            )], 200)).with_csrf())
+        return route
 
 

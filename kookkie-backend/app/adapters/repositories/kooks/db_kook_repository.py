@@ -9,12 +9,12 @@ from .kook_record import Kook as KookRecord
 import logging
 
 admins = [
-    Kook(id=ID.from_string('a8487ed5-39b4-48da-bf9a-a536e937a85a'), email='anton@qwan.eu', name='Marc Evers',
+    Kook(id=ID.from_string('a8487ed5-39b4-48da-bf9a-a536e937a85a'), email='anton@qwan.eu', name='Anton Brunt',
          is_admin=True, hashed_password=
-                '$pbkdf2-sha256$29000$hjDGGANAiLH2HkNobU2JsQ$BoV7gbV6dlTp4NEOLs9Rxf6h9UXa34lEa/osv3R7Tgc'),
+                '$pbkdf2-sha256$29000$SknJec95DwFASKk1hlCq9Q$wsQyq5xXnwqr5sLIdVaLH.omXpnlrJyPQuwxtARyNlQ'),
     Kook(id=ID.from_string('f894571d-5707-4ea1-86f5-1d421ed37b91'), email='rob@qwan.eu', name='Rob Westgeest',
          is_admin=True, hashed_password=
-                '$pbkdf2-sha256$29000$IESoNWYMAaB0rvU.p9Sakw$lbdM0F2hZ7GPBZ8uM2K1GCT5LO07JKJLxBbUWCI7Xr8')]
+                '$pbkdf2-sha256$29000$SknJec95DwFASKk1hlCq9Q$wsQyq5xXnwqr5sLIdVaLH.omXpnlrJyPQuwxtARyNlQ')]
 
 
 class DBKookRepository(KookRepository):
