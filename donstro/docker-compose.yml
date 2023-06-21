@@ -1,0 +1,49 @@
+version: "3.5"
+services:
+  kookkie-haproxy:
+    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-proxy:1.1.0
+    environment:
+      - FRONTEND_PORT=5050
+      - FRONTEND_HOST=kookkie-frontend
+      - BACKEND_PORT=5000
+      - BACKEND_HOST=kookkie-backend
+    ports:
+      - "9090:9090"
+      - "9091:9091"
+    logging:
+      driver: "json-file"
+      options: 
+        max-size: "500k"
+        max-file: "3"
+  kookkie-frontend:
+    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-frontend:0.0.1
+    ports:
+      - "5050:5050"
+    logging:
+      driver: "json-file"
+      options: 
+        max-size: "500k"
+        max-file: "3"
+  kookkie-backend:
+    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-backend:0.0.1
+    environment:
+      - SMTP_HOST
+      - SMTP_PORT
+      - SMTP_USER
+      - SMTP_PASSWORD
+      - SECRET_KEY
+      - MAIL_FROM
+      - METRICS_HOST=kookkie-cloudwatch-agent
+      - AWS_CLOUDWATCH
+      - ENABLE_CSRF
+    volumes:
+      - prod_data:/opt/kookkie-backend/data
+    ports:
+      - "5000:5000"
+    logging:
+      driver: "json-file"
+      options: 
+        max-size: "3m"
+        max-file: "6"
+volumes:
+  prod_data:

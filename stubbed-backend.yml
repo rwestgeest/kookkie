@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  afp-haproxy:
+    build: ./afp-proxy
+    volumes:
+      - ./afp-proxy/:/usr/local/etc/haproxy/    
+    environment:
+      - FRONTEND_PORT=8080
+      - FRONTEND_HOST=afp-frontend
+      - BACKEND_PORT=3000
+      - BACKEND_HOST=afp-backend
+    ports:
+      - "9090:9090"
+      - "8090:8090"
+  afp-frontend:
+    image: node:lts-alpine  
+    volumes:
+      - ./afp-frontend/:/home/work
+    environment:
+      - VUE_APP_ENVIRONMENT=local-stubbed
+    user: ${CURRENT_UID}:${CURRENT_GID}
+    working_dir: /home/work
+    command: npm run dev
+    ports:
+      - "8080:8080"
+  afp-backend:
+    image: node:lts-alpine  
+    volumes:
+      - ./afp-frontend/stubs/:/home/work
+    user: ${CURRENT_UID}:${CURRENT_GID}
+    working_dir: /home/work
+    command: ./run.sh
+    ports:
+      - "3000:3000"

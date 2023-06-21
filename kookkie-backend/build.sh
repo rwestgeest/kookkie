@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 VERSION=$(cat VERSION)
-REPO="525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/afdop-backend"
+REPO="525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-backend"
 
 command=$1
 case $command in

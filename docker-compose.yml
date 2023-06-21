@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  afp-haproxy:
+    build: ./afp-proxy
+    environment:
+      - FRONTEND_PORT=5050
+      - FRONTEND_HOST=afp-frontend
+      - BACKEND_PORT=5000
+      - BACKEND_HOST=afp-backend
+    ports:
+      - "9090:9090"
+      - "8090:8090"
+  afp-frontend:
+    build: 
+      context: ./afp-frontend/deploy
+    ports:
+      - "5050:5050"
+  afp-backend:
+    build: ./afp-backend
+    ports:
+      - "5000:5000"
+

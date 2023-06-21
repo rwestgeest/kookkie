@@ -1,0 +1,60 @@
+version: "3.7"
+services:
+  kookkie-haproxy:
+    build: ./kookkie-proxy
+    volumes:
+      - ./kookkie-proxy/:/usr/local/etc/haproxy/
+    environment:
+      - FRONTEND_PORT=8080
+      - FRONTEND_HOST=kookkie-frontend
+      - BACKEND_PORT=5000
+      - BACKEND_HOST=kookkie-backend
+    ports:
+      - "9090:9090"
+      - "9091:9091"
+  kookkie-frontend:
+    image: node:lts-alpine
+    volumes:
+      - ./kookkie-frontend/:/home/work
+    user: ${CURRENT_UID}:${CURRENT_GID}
+    working_dir: /home/work
+    command: npx live-server --port=8080
+    ports:
+      - "8080:8080"
+  kookkie-backend:
+    image: python:3.10-alpine
+    volumes:
+      - ./kookkie-backend/:/home/work
+    environment:
+      - SMTP_HOST=kookkie-stub-smtp-server
+      - SMTP_PORT=2525
+      - FOR_TEST=True
+      - HTTPS_LINKS=False
+      - METRICS_HOST=kookkie-metrics
+      - HOME=/home/work
+    user: ${CURRENT_UID}:${CURRENT_GID}
+    working_dir: /home/work
+    command: ./run-dev.sh
+    ports:
+      - "5000:5000"
+  kookkie-metrics:
+    image: hopsoft/graphite-statsd
+    ports:
+      - "9095:80"
+      - "9096:81"
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
+  kookkie-stub-smtp-server:
+    image: python:3.10-alpine
+    volumes:
+      - ./kookkie-stub-smtp-server/:/home/work
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOME=/home/work
+    user: ${CURRENT_UID}:${CURRENT_GID}
+    working_dir: /home/work
+    command: ./run.sh
+    ports:
+      - "2525:2525"

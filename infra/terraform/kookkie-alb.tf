@@ -137,7 +137,7 @@ resource "aws_lb_listener_rule" "forward_https_to_frontend_3" {
     path_pattern {
       values = [
         # front end urls, keep this in sync with the front end routes!
-        "/dashboard", "/diagnostic-session/*", "/rollup/*", "/terms-of-service", "/doc/*"
+        "/app/*"
       ]
     }
   }
