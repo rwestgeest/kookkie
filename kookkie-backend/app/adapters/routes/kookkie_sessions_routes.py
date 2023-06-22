@@ -26,7 +26,6 @@ class KookkieSessionRoutes(object):
                 {**request.get_json(), **dict(kook=self.current_user_repository.current_user())}))
                                   .on_success(lambda result: (dict(id=str(result.id)), 201))
                                   .with_csrf())
-        return route
 
 
         @route('/api/kookkie-sessions', methods=['GET'], login_required=True)
