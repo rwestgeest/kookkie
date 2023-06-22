@@ -1,6 +1,6 @@
 import {GetPeople, HttpBasedPersonRepository} from "./get-people.js";
 import {PageThatRenders, Router} from "./router.js";
-import { Component } from './components/component.js';
+import {Component} from './components/component.js';
 
 export class UserProfileModule  {
     constructor() {
@@ -13,16 +13,14 @@ export class UserProfileModule  {
     }
 
     async getUserProfile() {
-        self = this;
-        await fetch('/api/profile', {
+        this.userProfile = await fetch('/api/profile', {
             headers: {
                 "Content-Type": "application/json",
             }}).then(r => {
                 if (r.ok) {
-                    r.json().then(userProfile => {
-                        self.userProfile = userProfile;
-                        console.log(userProfile);
-                    });
+                    return r.json();
+                } else {
+                    return {name: "unknown"};
                 }
             });
     }
@@ -33,16 +31,18 @@ export function SessionsPage(userProfileModule) {
         constructor() {
             super();
             this.userProfileModule = userProfileModule;
-            this.kookkies = [{ name: 'lekker eten met antond'} ];
+            this.kookkies = [{ name: 'lekker eten met anton'} ];
         }
+
         html() {
             let profile = this.userProfileModule.userProfile
-            return `<p class="profile-header"> ${profile.name} </p>
-            <h1>Sessions</h1>
-            <ul class="Kookkies">
-                 ${ this.kookkies.map(k => { `<li>k.name</li>` }).join('\n') }
-                
-            </ul>`
+            return `
+                <p class="profile-header"> ${profile.name} </p>
+                <h1>Sessions</h1>
+                <ul class="Kookkies">
+                     ${ this.kookkies.map(k => { return `<li> ${k.name} </li>` }).join('\n') }
+                </ul>
+                `
         }
         onInit() {
 
