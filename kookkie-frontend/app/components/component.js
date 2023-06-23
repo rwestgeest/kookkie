@@ -1,5 +1,9 @@
 
 export class Component extends HTMLElement {
+    static define(tag, componentClass) {
+        customElements.define(tag, componentClass);
+    }
+
     constructor() {
         super();
         this._shadowRoot = this.attachShadow({ mode: "closed" });
@@ -12,6 +16,7 @@ export class Component extends HTMLElement {
     }
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue) return;
+        this[property] = newValue;
         this.render();
     }
     connectedCallback() {
@@ -22,3 +27,4 @@ export class Component extends HTMLElement {
     }
     onInit() { }
 }
+
