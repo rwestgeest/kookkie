@@ -15,7 +15,7 @@ export function SessionsPage(userProfileModule) {
                 <h1>Sessions</h1>
                 <ul id="kookkies-list">
                      ${this.kookkies.map(k => {
-                return `<li onclick="">${k.name}</li>`
+                return `<li id="asd">${k.name}</li>`
             }).join('\n')}
                 </ul>
                 `
@@ -23,7 +23,7 @@ export function SessionsPage(userProfileModule) {
 
         onInit() {
             this.elementById('kookkies-list').addEventListener('click', e => {
-                console.log('click', e.target.dataset);
+                console.log('click', e.target.id);
             })
         }
     });
