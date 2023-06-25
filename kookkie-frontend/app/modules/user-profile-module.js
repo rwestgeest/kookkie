@@ -1,5 +1,5 @@
 import {UserProfile} from "../domain/user-profile.js";
-import {ObservableModel} from "../domain/observable-model";
+import {ObservableModel} from "../domain/observable-model.js";
 
 export class UserProfileModule extends ObservableModel {
     constructor(userProfileRepository) {
@@ -9,8 +9,12 @@ export class UserProfileModule extends ObservableModel {
     }
 
     set userProfile(value) {
+        console.log("setting user profile form", this._userProfile, "to", value);
+        const old_profile = this._userProfile;
         this._userProfile = value;
-        this.changed();
+        if (JSON.stringify(old_profile) !== JSON.stringify(value)) {
+            this.changed();
+        }
     }
     get userProfile() {
         return this._userProfile;

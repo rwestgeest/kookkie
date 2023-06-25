@@ -1,5 +1,6 @@
 import {PageThatRenders, Router} from "../app/router";
 import expect from "expect";
+import {ObservableModel} from "../app/domain/observable-model";
 
 class PageThatRendersWithParams extends PageThatRenders{
     constructor(barContent) {
@@ -12,12 +13,20 @@ class PageThatRendersWithParams extends PageThatRenders{
 
 }
 
-class FakeUserProfileModule {
+class FakeUserProfileModule extends ObservableModel {
     constructor(homePage) {
+        super()
         this._homePage = homePage;
     }
     homePage() {
         return Promise.resolve(this._homePage)
+    }
+    setHomePage(page) {
+        const oldHome = this._homePage;
+        this._homePage = page;
+        if (oldHome !== page) {
+            this.changed();
+        }
     }
 }
 
@@ -59,7 +68,14 @@ describe('router', () => {
             expect(document.querySelector("#router-view").innerHTML).toEqual('bar-content');
             expect(pageWithParameters.params).toEqual({id: "123", name: "henk"});
         });
+
+        it('changes root when user profile changes', async () => {
+            await userProfileModule.setHomePage('#/foo');
+            expect(document.querySelector("#router-view").innerHTML).toEqual('foo-content');
+        });
     });
+
+
     describe('when windows location is anything else', () => {
         beforeEach(async () => {
             window.location.hash = '/foo';

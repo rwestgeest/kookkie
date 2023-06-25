@@ -1,3 +1,5 @@
+import {View} from "./domain/view.js";
+
 class Route {
     constructor(path, page) {
         this._path = path;
@@ -28,8 +30,9 @@ class Route {
     }
 }
 
-export class Router {
+export class Router extends View {
     constructor(window, homePageProvider) {
+        super();
         this.routes = [];
         this._default_path = "#/"
         this._window = window
@@ -66,6 +69,7 @@ export class Router {
         this._window.addEventListener('hashchange', () => {
             this.renderPage()
         }, false);
+        this._homePageProvider.registerView(this);
         if (this.currentLocation() !== '') {
             this.renderPage();
             return this;
@@ -75,6 +79,14 @@ export class Router {
             this.renderPage();
         });
         return this;
+    }
+
+    async update() {
+        await this._homePageProvider.homePage().then((homePage) => {
+            console.log("homepageprov", this._homePageProvider,"new homepage", homePage)
+            this.goto(homePage);
+            this.renderPage();
+        });
     }
 }
 

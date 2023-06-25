@@ -9,7 +9,7 @@ export class ApiBasedUserProfileRepository extends UserProfileRepository {
             }
         }).then(r => {
             if (r.ok) {
-                return new UserProfile(r.json());
+                return r.json().then( json => new UserProfile(json) );
             } else {
                 return UserProfile.null();
             }
