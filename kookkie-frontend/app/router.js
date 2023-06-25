@@ -2,12 +2,26 @@ class Route {
     constructor(path, page) {
         this._path = path;
         this._page = page;
+        this._params = []
+        this._params2 = {}
+        const pathExp = path.replace(/:(\w+)/g, (match, param) => {
+            this._params.push(param);
+            return '([^\\/]+)'
+        }).replace(/\//g, '\\/')
+        this._pathExp = new RegExp(`^${pathExp}$`);
     }
     renderPage() {
-        this._page.render();
+        this._page.render(this._params2);
     }
     matches(path) {
-        return path === this._path    }
+        const match = path.match(this._pathExp);
+        if (match != null) {
+            match.shift();
+            this._params2 = {}
+            match.forEach((param, index) => this._params2[this._params[index]] = param);
+        }
+        return match != null;
+    }
 }
 
 export class Router {
@@ -19,6 +33,10 @@ export class Router {
     currentLocation() {
         return '/';
     }
+    withNotFound(page) {
+        this.notFoundPage = page;
+        return this;
+    }
     addRoute(path, page) {
         this.routes.push(new Route(path, page));
         return this;
@@ -26,6 +44,10 @@ export class Router {
 
     renderPage() {
         const currentRoute = this.routes.find(route => route.matches(window.location.hash));
+        if (currentRoute === undefined) {
+            this.notFoundPage.render();
+            return;
+        }
         currentRoute.renderPage();
     }
 

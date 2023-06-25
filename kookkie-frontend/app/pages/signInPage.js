@@ -11,7 +11,7 @@ export function SignInPage(userProfileModule) {
             return /*html*/ `
             <div class="kookkie">
               <h2>Please sign in with your username and password</h2>
-              <form @submit.prevent>
+              <form>
                   Username:
                   <input
                   id="sign-in-username"
