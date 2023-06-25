@@ -10,6 +10,6 @@ export class UserProfile {
     }
 
     homePage() {
-        return "#/signin";
+        return "role";
     }
 }
