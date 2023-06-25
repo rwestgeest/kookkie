@@ -10,29 +10,39 @@ class Route {
         }).replace(/\//g, '\\/')
         this._pathExp = new RegExp(`^${pathExp}$`);
     }
-    renderPage() {
-        this._page.render(this._params2);
+    renderPage(path) {
+        this._page.render(this.paramsFor(path));
     }
+
+    paramsFor(path) {
+        const match = path.match(this._pathExp);
+        match.shift();
+        const params = {}
+        match.forEach((param, index) => params[this._params[index]] = param);
+        return params;
+    }
+
     matches(path) {
         const match = path.match(this._pathExp);
-        if (match != null) {
-            match.shift();
-            this._params2 = {}
-            match.forEach((param, index) => this._params2[this._params[index]] = param);
-        }
         return match != null;
     }
 }
 
 export class Router {
-    constructor() {
+    constructor(window) {
         this.routes = [];
         this._default_path = "#/"
+        this._window = window
+    }
+
+    goto(path) {
+        this._window.location.hash = path;
     }
 
     currentLocation() {
-        return '/';
+        return window.location.hash;
     }
+
     withNotFound(page) {
         this.notFoundPage = page;
         return this;
@@ -43,12 +53,12 @@ export class Router {
     }
 
     renderPage() {
-        const currentRoute = this.routes.find(route => route.matches(window.location.hash));
+        const currentRoute = this.routes.find(route => route.matches(this.currentLocation()));
         if (currentRoute === undefined) {
             this.notFoundPage.render();
             return;
         }
-        currentRoute.renderPage();
+        currentRoute.renderPage(this.currentLocation());
     }
 
     default(path) {
@@ -57,10 +67,10 @@ export class Router {
     }
 
     start() {
-        window.addEventListener('hashchange', () => {
+        this._window.addEventListener('hashchange', () => {
             this.renderPage()
         }, false);
-        window.location.hash = this._default_path;
+        this.goto(this._default_path);
         this.renderPage();
         return this;
     }

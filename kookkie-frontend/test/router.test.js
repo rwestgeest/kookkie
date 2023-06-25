@@ -1,4 +1,5 @@
 import {PageThatRenders, Router} from "../app/router";
+import expect from "expect";
 
 
 class PageThatRendersWithParams extends PageThatRenders{
@@ -30,18 +31,18 @@ describe('router', () => {
         });
 
         it('defaults to slash', () => {
-            expect(window.location.hash).toBe('#/');
+            expect(router.currentLocation()).toBe('#/');
             expect(document.querySelector("#router-view").innerHTML).toEqual('root-content');
         });
 
         it('it renders another page when window location changes', async () => {
-            window.location.hash = '/foo';
+            router.goto('/foo');
             window.dispatchEvent(new Event('hashchange'));
             expect(document.querySelector("#router-view").innerHTML).toEqual('foo-content');
         });
 
         it('passes paramters to rendered page if any', async () => {
-            window.location.hash = '/bar/123/henk';
+            router.goto('/bar/123/henk');
             window.dispatchEvent(new Event('hashchange'));
             expect(document.querySelector("#router-view").innerHTML).toEqual('bar-content');
             expect(pageWithParameters.params).toEqual({id: "123", name: "henk"});
