@@ -66,6 +66,10 @@ export class Router {
         this._window.addEventListener('hashchange', () => {
             this.renderPage()
         }, false);
+        if (this.currentLocation() !== '') {
+            this.renderPage();
+            return this;
+        }
         await this._homePageProvider.homePage().then((homePage) => {
             this.goto(homePage);
             this.renderPage();

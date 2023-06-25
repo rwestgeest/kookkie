@@ -36,8 +36,9 @@ describe('router', () => {
             .addRoute('#/bar/:id/:name', pageWithParameters)
 
     });
-    describe('without specifying default path', () => {
+    describe('when windows location is root', () => {
         beforeEach(async () => {
+            window.location.hash = '';
             await router.start();
         });
 
@@ -59,5 +60,15 @@ describe('router', () => {
             expect(pageWithParameters.params).toEqual({id: "123", name: "henk"});
         });
     });
+    describe('when windows location is anything else', () => {
+        beforeEach(async () => {
+            window.location.hash = '/foo';
+            await router.start();
+        });
 
+        it('goes to that page', async () => {
+            router.goto('/foo');
+            expect(document.querySelector("#router-view").innerHTML).toEqual('foo-content');
+        });
+    });
 });

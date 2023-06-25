@@ -1,4 +1,4 @@
-import {UserProfileModule} from "../../app/modules/userProfileModule";
+import {UserProfileModule} from "../../app/modules/user-profile-module";
 import {UserProfile} from "../../app/domain/userProfile";
 import {UserProfileRepository} from "../../app/domain/user-profile-repository";
 
@@ -31,5 +31,8 @@ describe(UserProfileModule, () => {
             await expect(userProfileModule.homePage()).resolves.toEqual(UserProfile
                 .null().homePage());
         });
+    });
+    describe('when profile changes', () => {
+
     });
 });

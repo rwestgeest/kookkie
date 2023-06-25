@@ -10,6 +10,6 @@ export class UserProfile {
     }
 
     homePage() {
-        return "role";
+        return "#/sessions";
     }
 }
