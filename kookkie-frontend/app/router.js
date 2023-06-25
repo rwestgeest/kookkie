@@ -29,10 +29,11 @@ class Route {
 }
 
 export class Router {
-    constructor(window) {
+    constructor(window, homePageProvider) {
         this.routes = [];
         this._default_path = "#/"
         this._window = window
+        this._homePageProvider = homePageProvider;
     }
 
     goto(path) {
@@ -61,17 +62,14 @@ export class Router {
         currentRoute.renderPage(this.currentLocation());
     }
 
-    default(path) {
-        this._default_path = path;
-        return this;
-    }
-
-    start() {
+    async start() {
         this._window.addEventListener('hashchange', () => {
             this.renderPage()
         }, false);
-        this.goto(this._default_path);
-        this.renderPage();
+        await this._homePageProvider.homePage().then((homePage) => {
+            this.goto(homePage);
+            this.renderPage();
+        });
         return this;
     }
 }
