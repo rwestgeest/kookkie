@@ -10,6 +10,8 @@ export class UserProfile {
     }
 
     homePage() {
-        return "#/sessions";
+        if (this.role === UserProfile.null().role)
+            return "#/signin";
+        return "#/sessions"
     }
 }

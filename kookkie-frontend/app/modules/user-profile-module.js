@@ -1,9 +1,19 @@
-import {UserProfile} from "../domain/userProfile.js";
+import {UserProfile} from "../domain/user-profile.js";
+import {ObservableModel} from "../domain/observable-model";
 
-export class UserProfileModule {
+export class UserProfileModule extends ObservableModel {
     constructor(userProfileRepository) {
+        super();
         this._userProfileRepository = userProfileRepository;
-        this.userProfile = UserProfile.null();
+        this._userProfile = UserProfile.null();
+    }
+
+    set userProfile(value) {
+        this._userProfile = value;
+        this.changed();
+    }
+    get userProfile() {
+        return this._userProfile;
     }
 
     async homePage() {

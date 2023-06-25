@@ -1,5 +1,5 @@
 import {UserProfileRepository} from "../domain/user-profile-repository.js";
-import {UserProfile} from "../domain/userProfile.js";
+import {UserProfile} from "../domain/user-profile.js";
 
 export class ApiBasedUserProfileRepository extends UserProfileRepository {
     async get() {
