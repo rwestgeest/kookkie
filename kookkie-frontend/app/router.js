@@ -83,7 +83,6 @@ export class Router extends View {
 
     async update() {
         await this._homePageProvider.homePage().then((homePage) => {
-            console.log("homepageprov", this._homePageProvider,"new homepage", homePage)
             this.goto(homePage);
             this.renderPage();
         });

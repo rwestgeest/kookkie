@@ -9,7 +9,6 @@ export class UserProfileModule extends ObservableModel {
     }
 
     set userProfile(value) {
-        console.log("setting user profile form", this._userProfile, "to", value);
         const old_profile = this._userProfile;
         this._userProfile = value;
         if (JSON.stringify(old_profile) !== JSON.stringify(value)) {

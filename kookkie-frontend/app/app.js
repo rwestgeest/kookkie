@@ -3,8 +3,10 @@ import {UserProfileModule} from './modules/user-profile-module.js'
 import {SessionsPage} from './pages/sessions-page.js'
 import {SignInPage} from './pages/sign-in-page.js'
 import {ApiBasedUserProfileRepository} from './adapters/api-based-user-profile-repository.js'
+import {FetchBasedHTTP} from "./adapters/fetch-based-http.js";
 
-let userProfileModule = new UserProfileModule(new ApiBasedUserProfileRepository());
+const http = new FetchBasedHTTP();
+let userProfileModule = new UserProfileModule(new ApiBasedUserProfileRepository(http));
 SignInPage(userProfileModule);
 SessionsPage(userProfileModule);
 
