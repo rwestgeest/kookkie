@@ -1,10 +1,10 @@
 import { Component } from '../components/component.js'
 
-export function SignInPage(userProfileModule) {
+export function SignInPage(authenticator) {
     return Component.define('sign-in-page', class extends Component {
         constructor() {
             super();
-            this.userProfileModule = userProfileModule;
+            this.authenticator = authenticator;
         }
 
         html() {
@@ -37,18 +37,7 @@ export function SignInPage(userProfileModule) {
         login() {
             let username = this.elementById('sign-in-username').value;
             let password = this.elementById('sign-in-password').value;
-            fetch('/api/login', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({username: username, password: password})
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        this.userProfileModule.onSignIn();
-                    }
-                });
+            this.authenticator.signIn(username, password);
         }
 
     });

@@ -13,7 +13,8 @@ describe(ApiBasedUserProfileRepository, () => {
     describe('getting profile', () => {
         it('succeeds when api responds with ok and user profile', async () => {
             http.onGet('/api/profile').reply(200, { email:"rob@qwan.eu",name:"Rob Westgeest",role:"admin"});
-            expect(profileRepo.get()).resolves.toEqual(
+            const userProfile = await profileRepo.get();
+            expect(userProfile).toEqual(
                 new UserProfile({ email:"rob@qwan.eu",name:"Rob Westgeest",role:"admin"})
             );
         });

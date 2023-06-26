@@ -10,15 +10,17 @@ class HTTPStubResponseExpression {
 }
 
 class HTTPOperation {
-    constructor(url) {
+    constructor(url, body) {
         this._url = url;
+        this._body = body;
         this._response = {};
+
     }
     respondWith(response) {
         this._response = response;
     }
-    matches(url) {
-        return this._url === url;
+    matches(url, body={}) {
+        return this._url === url  && (this._body === undefined || JSON.stringify(this._body) === JSON.stringify(body));
     }
     async stubOperation(){
         if (this._response.status >= 200 && this._response.status < 300) {
@@ -42,6 +44,19 @@ export class HTTPStub {
         if (this.httpOperation.matches(url)) {
             return this.httpOperation.stubOperation();
         }
-        return Promise.reject(`no mock operation defined for ${url}`)
+        return Promise.reject(`no get operation prepared for ${url}`)
     }
+
+    onPost(url, body) {
+        this.httpOperation = new HTTPOperation(url, body);
+        return new HTTPStubResponseExpression(this.httpOperation);
+    }
+
+    async post(url, body) {
+        if (this.httpOperation.matches(url, body)) {
+            return this.httpOperation.stubOperation();
+        }
+        return Promise.reject(`no post operation defined for ${url} and bpdy ${JSON.stringify(body)}`)
+    }
+
 }

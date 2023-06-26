@@ -4,10 +4,13 @@ import {SessionsPage} from './pages/sessions-page.js'
 import {SignInPage} from './pages/sign-in-page.js'
 import {ApiBasedUserProfileRepository} from './adapters/api-based-user-profile-repository.js'
 import {FetchBasedHTTP} from "./adapters/fetch-based-http.js";
+import {AuthenticationModule} from "./modules/authentication.module.js";
+import {ApiBasedAuthenticator} from "./adapters/api-based.authenticator.js";
 
 const http = new FetchBasedHTTP();
 let userProfileModule = new UserProfileModule(new ApiBasedUserProfileRepository(http));
-SignInPage(userProfileModule);
+let authenticationModule = new AuthenticationModule(userProfileModule, new ApiBasedAuthenticator(http));
+SignInPage(authenticationModule);
 SessionsPage(userProfileModule);
 
 const router = new Router(window, userProfileModule)
