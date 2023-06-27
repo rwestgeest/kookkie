@@ -1,15 +1,15 @@
 import { Component } from '../components/component.js'
 
-export function SignInPage(authenticator) {
+export function SignInPage(authenticationModule) {
     return Component.define('sign-in-page', class extends Component {
         constructor() {
             super();
-            this.authenticator = authenticator;
+            this._authenticationModule = authenticationModule;
         }
 
         html() {
             return /*html*/ `
-            <div class="kookkie">
+            <div id="kookkie-signin">
               <h2>Please sign in with your username and password</h2>
               <form>
                   Username:
@@ -37,7 +37,7 @@ export function SignInPage(authenticator) {
         login() {
             let username = this.elementById('sign-in-username').value;
             let password = this.elementById('sign-in-password').value;
-            this.authenticator.signIn(username, password);
+            this._authenticationModule.signIn(username, password);
         }
 
     });

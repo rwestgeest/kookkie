@@ -2,10 +2,8 @@ import {View} from "./domain/view.js";
 
 class Route {
     constructor(path, page) {
-        this._path = path;
         this._page = page;
         this._params = []
-        this._params2 = {}
         const pathExp = path.replace(/:(\w+)/g, (match, param) => {
             this._params.push(param);
             return '([^\\/]+)'

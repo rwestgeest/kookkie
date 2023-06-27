@@ -10,6 +10,7 @@ import {ApiBasedAuthenticator} from "./adapters/api-based.authenticator.js";
 const http = new FetchBasedHTTP();
 let userProfileModule = new UserProfileModule(new ApiBasedUserProfileRepository(http));
 let authenticationModule = new AuthenticationModule(userProfileModule, new ApiBasedAuthenticator(http));
+
 SignInPage(authenticationModule);
 SessionsPage(userProfileModule);
 
