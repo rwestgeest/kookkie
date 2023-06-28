@@ -13,7 +13,7 @@ write_file('kookkie-backend/VERSION', new_version)
 patch_file('donstro/docker-compose.yml', lambda c: c.replace('afdop-backend:{}'.format(old_version), 'afdop-backend:{}'.format(new_version)))
 
 run_pipeline(
-    task('bash', 'qwan', 'docker-login'),
+    task('bash', 'docker-login.sh'),
     chdir('kookkie-backend'),
     task('bash', 'build.sh'),
     task('bash', 'build.sh', 'push'),
