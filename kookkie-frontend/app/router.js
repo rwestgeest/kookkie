@@ -1,4 +1,3 @@
-import {View} from "./domain/view.js";
 
 class Route {
     constructor(path, page) {
@@ -28,13 +27,11 @@ class Route {
     }
 }
 
-export class Router extends View {
-    constructor(window, homePageProvider) {
-        super();
+export class Router {
+    constructor(window) {
         this.routes = [];
         this._default_path = "#/"
         this._window = window
-        this._homePageProvider = homePageProvider;
     }
 
     goto(path) {
@@ -64,27 +61,16 @@ export class Router extends View {
     }
 
     async start() {
+        if (this.currentLocation() === "") {
+            this._window.location.hash="#/"
+        }
         this._window.addEventListener('hashchange', () => {
             this.renderPage()
         }, false);
-        this._homePageProvider.registerView(this);
-        if (this.currentLocation() !== '') {
-            this.renderPage();
-            return this;
-        }
-        await this._homePageProvider.homePage().then((homePage) => {
-            this.goto(homePage);
-            this.renderPage();
-        });
+        this.renderPage();
         return this;
     }
 
-    async update() {
-        await this._homePageProvider.homePage().then((homePage) => {
-            this.goto(homePage);
-            this.renderPage();
-        });
-    }
 }
 
 export class PageThatRenders {

@@ -1,4 +1,4 @@
-import {UserProfile} from "../../app/domain/user-profile";
+import {UserProfile} from "../../app/domain/user-profile.js";
 
 describe(UserProfile, () => {
     describe('homePage', () => {

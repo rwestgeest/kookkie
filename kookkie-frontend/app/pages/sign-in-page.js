@@ -30,7 +30,7 @@ export function SignInPage(authenticationModule) {
         `
         }
 
-        onInit() {
+        whenRendered() {
             this._shadowRoot.getElementById('sign-in-button').addEventListener('click', e => this.login());
         }
 

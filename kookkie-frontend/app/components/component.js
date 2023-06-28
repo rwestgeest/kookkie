@@ -11,20 +11,25 @@ export class Component extends HTMLElement {
     elementById(id) {
         return this._shadowRoot.getElementById(id);
     }
-    render() {
-        this._shadowRoot.innerHTML = this.html()
+
+    render(params) {
+        window.requestAnimationFrame(() => {
+            this._shadowRoot.innerHTML = this.html(params);
+            this.whenRendered();
+        });
     }
+
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue) return;
         this[property] = newValue;
         this.render();
     }
     connectedCallback() {
-        window.requestAnimationFrame(() => {
-            this.render();
-            this.onInit();
-        });
+        this.render();
+        this.onInit();
     }
+
     onInit() { }
+    whenRendered() { }
 }
 

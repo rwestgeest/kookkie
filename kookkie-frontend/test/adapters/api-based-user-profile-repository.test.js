@@ -1,5 +1,5 @@
-import {ApiBasedUserProfileRepository} from "../../app/adapters/api-based-user-profile-repository";
-import {UserProfile} from "../../app/domain/user-profile";
+import {ApiBasedUserProfileRepository} from "../../app/adapters/api-based-user-profile-repository.js";
+import {UserProfile} from "../../app/domain/user-profile.js";
 import {HTTPStub} from "./http-stub";
 
 describe(ApiBasedUserProfileRepository, () => {

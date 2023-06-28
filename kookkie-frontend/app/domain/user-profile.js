@@ -6,7 +6,7 @@ export class UserProfile {
     }
 
     static null() {
-        return new UserProfile({role: "anonymous"});
+        return new UserProfile({name: "", email: "", role: "anonymous"});
     }
 
     homePage() {

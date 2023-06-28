@@ -1,30 +1,46 @@
 import {Component} from '../components/component.js';
 
-export function SessionsPage(userProfileModule) {
+export function SessionsPage(kookkiesModule, userProfileModule) {
     return Component.define('sessions-page', class extends Component {
         constructor() {
             super();
             this.userProfileModule = userProfileModule;
-            this.kookkies = [{name: 'lekker eten met anton'}];
+            this.kookkiesModule = kookkiesModule;
+            this.kookkies = [];
         }
 
         html() {
             let profile = this.userProfileModule.userProfile
             return `
+                <style>
+                    .kookkie-name {padding-right: 2em;}
+                    li {}
+                </style>
                 <p class="profile-header"> ${profile.name} </p>
                 <h1>Sessions</h1>
-                <ul id="kookkies-list">
+                <ul id="kookkies-listt">
                      ${this.kookkies.map(k => {
-                return `<li id="asd">${k.name}</li>`
-            }).join('\n')}
+                        return `<li id="${k.id}"><a href="#/session/${k.id}"><span class="kookkie-name">${k.name}</span>
+                                <span class="kook-name">${k.kook_name}</span></a></li>`
+                    }).join('\n')}
                 </ul>
                 `
         }
 
+        whenRendered() {
+            this.elementById('kookkies-listt').addEventListener('click', e => {
+                console.log('click', e.target);
+            });
+        }
+
+        update() {
+            this.kookkies = this.kookkiesModule.kookkies;
+            this.render();
+        }
+
         onInit() {
-            this.elementById('kookkies-list').addEventListener('click', e => {
-                console.log('click', e.target.id);
-            })
+            this.kookkiesModule.registerView(this);
+            this.kookkiesModule.obtainKookkies();
         }
     });
 }

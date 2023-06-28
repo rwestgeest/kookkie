@@ -19,7 +19,7 @@ class FakeUserProfileModule extends ObservableModel {
         this._homePage = homePage;
     }
     homePage() {
-        return Promise.resolve(this._homePage)
+        return this._homePage
     }
     setHomePage(page) {
         const oldHome = this._homePage;
@@ -40,7 +40,7 @@ describe('router', () => {
         userProfileModule = new FakeUserProfileModule("#/the_home_page");
         router = new Router(window, userProfileModule)
             .withNotFound(new PageThatRenders('not found'))
-            .addRoute('#/the_home_page', new PageThatRenders('root-content'))
+            .addRoute('#/', new PageThatRenders('root-content'))
             .addRoute('#/foo', new PageThatRenders('foo-content'))
             .addRoute('#/bar/:id/:name', pageWithParameters)
 
@@ -51,8 +51,8 @@ describe('router', () => {
             await router.start();
         });
 
-        it('defaults to userProfilesHomePage', () => {
-            expect(router.currentLocation()).toBe(userProfileModule._homePage);
+        it('defaults to root', () => {
+            expect(router.currentLocation()).toBe("#/");
             expect(document.querySelector("#router-view").innerHTML).toEqual('root-content');
         });
 
@@ -68,11 +68,6 @@ describe('router', () => {
             expect(document.querySelector("#router-view").innerHTML).toEqual('bar-content');
             expect(pageWithParameters.params).toEqual({id: "123", name: "henk"});
         });
-
-        it('changes root when user profile changes', async () => {
-            await userProfileModule.setHomePage('#/foo');
-            expect(document.querySelector("#router-view").innerHTML).toEqual('foo-content');
-        });
     });
 
 
@@ -83,7 +78,6 @@ describe('router', () => {
         });
 
         it('goes to that page', async () => {
-            router.goto('/foo');
             expect(document.querySelector("#router-view").innerHTML).toEqual('foo-content');
         });
     });

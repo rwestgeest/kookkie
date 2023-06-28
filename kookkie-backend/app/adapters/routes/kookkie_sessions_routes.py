@@ -32,11 +32,10 @@ class KookkieSessionRoutes(object):
         def all_kookkie_sessions():
             return build_response(from_result_of(Success(kookkies=[]))
                     .on_success(lambda result: ([dict(
-                id = IDGenerator().generate_id(),
+                id = str(IDGenerator().generate_id()),
                 date = "2023-06-07",
                 name = "Lekker eten met anton",
                 kook_name="anton",
-
             )], 200)).with_csrf())
         return route
 

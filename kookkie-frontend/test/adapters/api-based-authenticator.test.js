@@ -1,7 +1,7 @@
 import {HTTPStub} from "./http-stub";
 import {ApiBasedAuthenticator} from "../../app/adapters/api-based.authenticator";
 
-describe(ApiBasedAuthenticator, () => {
+describe(ApiBasedAuthenticator, () => {1
     let mock;
     let authenticator;
     beforeEach(() => {
