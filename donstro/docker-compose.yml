@@ -16,7 +16,7 @@ services:
         max-size: "500k"
         max-file: "3"
   kookkie-frontend:
-    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-frontend:0.0.3
+    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-frontend:0.0.4
     ports:
       - "5050:5050"
     logging:
