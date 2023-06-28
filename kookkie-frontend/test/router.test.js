@@ -41,6 +41,7 @@ describe('router', () => {
         router = new Router(window, userProfileModule)
             .withNotFound(new PageThatRenders('not found'))
             .addRoute('#/', new PageThatRenders('root-content'))
+            .addRoute('#/signin', new PageThatRenders('signin-content'))
             .addRoute('#/foo', new PageThatRenders('foo-content'))
             .addRoute('#/bar/:id/:name', pageWithParameters)
 
@@ -51,9 +52,9 @@ describe('router', () => {
             await router.start();
         });
 
-        it('defaults to root', () => {
-            expect(router.currentLocation()).toBe("#/");
-            expect(document.querySelector("#router-view").innerHTML).toEqual('root-content');
+        it('defaults to signin', () => {
+            expect(router.currentLocation()).toBe("#/signin");
+            expect(document.querySelector("#router-view").innerHTML).toEqual('signin-content');
         });
 
         it('it renders another page when window location changes', async () => {
@@ -70,6 +71,14 @@ describe('router', () => {
         });
     });
 
+    describe('when windows location is root ish', () => {
+        it('defaults to signin when location is rootish', async () => {
+            window.location.hash = '#/';
+            await router.start();
+            expect(router.currentLocation()).toBe("#/signin");
+            expect(document.querySelector("#router-view").innerHTML).toEqual('signin-content');
+        });
+    });
 
     describe('when windows location is anything else', () => {
         beforeEach(async () => {

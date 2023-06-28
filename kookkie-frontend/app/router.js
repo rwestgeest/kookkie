@@ -61,8 +61,8 @@ export class Router {
     }
 
     async start() {
-        if (this.currentLocation() === "") {
-            this._window.location.hash="#/"
+        if (this.currentLocation() === "" || this.currentLocation() === '#/') {
+            this._window.location.hash="#/signin"
         }
         this._window.addEventListener('hashchange', () => {
             this.renderPage()
