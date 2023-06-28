@@ -13,7 +13,7 @@ write_file('kookkie-frontend/VERSION', new_version)
 patch_file('donstro/docker-compose.yml', lambda c: c.replace('kookkie-frontend:{}'.format(old_version), 'kookkie-frontend:{}'.format(new_version)))
 
 run_pipeline(
-    task('bash', 'qwan', 'docker-login'),
+    task('bash', 'docker-login.sh'),
     chdir('kookkie-frontend'),
     task('bash', 'build.sh'),
     task('bash', 'build.sh', 'push'),
