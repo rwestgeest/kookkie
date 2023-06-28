@@ -10,7 +10,7 @@ answer = input('are you sure to release from {} to {}: '.format(old_version, new
 if answer != 'yes': fail_with('no confirmation')
 
 write_file('kookkie-frontend/VERSION', new_version)
-patch_file('donstro/docker-compose.yml', lambda c: c.replace('afdop-frontend:{}'.format(old_version), 'afdop-frontend:{}'.format(new_version)))
+patch_file('donstro/docker-compose.yml', lambda c: c.replace('kookkie-frontend:{}'.format(old_version), 'kookkie-frontend:{}'.format(new_version)))
 
 run_pipeline(
     task('bash', 'qwan', 'docker-login'),
