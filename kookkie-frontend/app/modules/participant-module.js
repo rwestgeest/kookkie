@@ -1,4 +1,4 @@
-import {Kookkie} from "../domain/kookkie";
+import {Kookkie} from "../domain/kookkie.js";
 
 export class ParticipantModule {
     constructor(kookkiesJoiner) {

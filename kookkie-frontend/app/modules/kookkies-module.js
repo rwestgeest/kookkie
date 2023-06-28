@@ -1,4 +1,4 @@
-import {ObservableModel} from "../domain/observable-model";
+import {ObservableModel} from "../domain/observable-model.js";
 
 export class KookkiesModule extends ObservableModel {
     constructor(kookkiesRepository) {
