@@ -18,8 +18,8 @@ describe(ApiBasedKookkiesRepository, () => {
                 name: "Lekker eten met anton",
                 kook_name: "anton"
             }]);
-            const userProfile = await profileRepo.allKookkies();
-            expect(userProfile).toEqual([
+            const kookkies = await profileRepo.allKookkies();
+            expect(kookkies).toEqual([
                 new Kookkie({
                     id: "some-id",
                     date: "2023-06-07",
