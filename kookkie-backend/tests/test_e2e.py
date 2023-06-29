@@ -115,10 +115,9 @@ class TestE2EParticipants:
 
     def test_can_join_a_session(self):
         kookkie_session = self.save_kookkie_session(KookkieSessionCreator().create_with_id(**validKookkieSessionCreationParameters()).kookkie_session_created)
-        participant = kookkie_session.participants[0]
-        response = self.participant_client.post('/api/kookkie-sessions/{id}/join/{joining_id}'.format(id = kookkie_session.id, joining_id=participant.joining_id))
+        response = self.participant_client.post('/api/kookkie-sessions/{id}/join'.format(id = kookkie_session.id))
         assert_created(response)
-        assert json.loads(response.data)['kook'] == kookkie_session.kook_name
+        assert json.loads(response.data)['kook_name'] == kookkie_session.kook_name
 
     def save_kookkie_session(self, session_created):
         self.kookkie_session_repo.save(session_created)

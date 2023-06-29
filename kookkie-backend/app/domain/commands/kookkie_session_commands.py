@@ -60,10 +60,8 @@ class JoinSession:
     def __init__(self, kookkie_session_repository: KookkieSessionsRepository):
         self.kookkie_session_repository = kookkie_session_repository
 
-    def __call__(self, kookkie_session_id: ID, joining_id: ID):
-        result = self.kookkie_session_repository.by_id_with_result(kookkie_session_id, kook=None)
-        if result.is_failure(): return result
-        return result.kookkie_session.join_participant_by_id(joining_id)
+    def __call__(self, kookkie_session_id: ID):
+        return self.kookkie_session_repository.by_id_with_result(kookkie_session_id, kook=None)
 
 
 class AddParticipant:

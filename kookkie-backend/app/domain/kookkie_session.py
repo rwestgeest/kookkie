@@ -96,13 +96,6 @@ class KookkieSession(object):
     def participant_count(self) -> int:
         return len(self.participants)
 
-    def join_participant_by_id(self, joining_id: ID) -> Result:
-        participant = next((p for p in self.participants if p.joining_id == joining_id), None)
-        if participant is None:
-            return UNKNOWN_PARTICIPANT
-        return Success(participant=participant, kook_name=self.kook_name)
-
-
     def add_participant(self, id_generator=IDGenerator()) -> Result:
         if self.participant_count() == MAX_NUMBER_OF_PARTICIPANTS:
             return Failure(message='Cannot have more than 30 participants')

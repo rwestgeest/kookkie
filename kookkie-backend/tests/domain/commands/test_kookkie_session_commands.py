@@ -51,12 +51,12 @@ class TestJoinSession:
 
     def test_responds_with_error_when_session_not_found(self):
         self.repository.by_id_with_result.return_value = Failure(message='kookkie session not found')
-        assert self.join_session(aValidID(11), aValidID(22)) == Failure(message='kookkie session not found')
+        assert self.join_session(aValidID(11)) == Failure(message='kookkie session not found')
     
     def test_joins_to_found_session(self):
         kookkie_session = aValidKookkieSession(id=aValidID('11'), participants=[])
         self.repository.by_id_with_result.return_value = Success(kookkie_session=kookkie_session)
-        assert self.join_session(aValidID(11), aValidID(22)) == kookkie_session.join_participant_by_id(aValidID(22))
+        assert self.join_session(aValidID(11)) == Success(kookkie_session=kookkie_session)
 
 
 class TestCloseSession:

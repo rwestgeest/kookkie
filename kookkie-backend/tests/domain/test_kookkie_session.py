@@ -56,20 +56,6 @@ class TestCreateWithId:
         assert self.creator.create_with_id(**validKookkieSessionCreationParameters(kook=None)) == Failure(message='kook is missing')
 
 
-
-class TestJoinSession:
-    def test_responds_with_error_when_participant_not_found_in_session(self):
-        kookkie_session = aValidKookkieSession(participants=[])
-        assert kookkie_session.join_participant_by_id(aValidID(22)) == UNKNOWN_PARTICIPANT
-    
-    def test_returns_success_when_joining(self):
-        participant = KookkieParticipant(id=aValidID('33'), joining_id=aValidID('22'))
-        kookkie_session = aValidKookkieSession(participants=[participant],
-                                                     kook_name='Mr. Kook')
-        assert kookkie_session.join_participant_by_id(aValidID(22)) == Success(
-            participant=participant, kook_name='Mr. Kook')
-
-
 class TestEquality:
     def test_returns_true_if_ids_are_equal(self):
         assert aValidKookkieSession(id=ID.from_string("11111111111111111111111111111111")) == aValidKookkieSession(id=ID.from_string("11111111111111111111111111111111"))
