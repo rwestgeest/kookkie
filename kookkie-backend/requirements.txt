@@ -18,3 +18,6 @@ werkzeug==2.2.2
 
 quiltz-domain==0.7.3
 quiltz-messaging==0.3.3
+
+authlib==1.2.0
+boto3==1.27.0

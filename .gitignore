@@ -6,4 +6,5 @@ venv
 terraform.tfvars
 .terraform.lock.hcl
 __pycache__
-
+*.pk
+*.pub
