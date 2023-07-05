@@ -16,7 +16,6 @@ from domain.builders import aValidInitialPasswordToken, \
 
 
 class TestKookkie:
-
     def test_changes_role_from_admin_to_kook(self):
         assert_that(aValidAdministrator().toggle_role().is_admin, is_(False))
 

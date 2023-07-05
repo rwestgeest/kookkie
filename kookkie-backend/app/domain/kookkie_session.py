@@ -6,7 +6,7 @@ from .email_addresses import EmailAddress, EmailAddresses
 from datetime import date, datetime
 from typing import List, Dict, Optional, Union
 from dataclasses import dataclass, field
-from functools import reduce
+import re
 
 MAX_NUMBER_OF_PARTICIPANTS = 30
 UNKNOWN_PARTICIPANT = Failure(message='unknown participant')
@@ -70,6 +70,7 @@ class KookkieSessionListItem:
 @dataclass(init=False)
 class KookkieSession(object):
     id: ID
+    name: str
     date: date
     kook_id: ID
     kook_name: str
@@ -82,8 +83,10 @@ class KookkieSession(object):
                  kook_id: ID,
                  kook_name: str,
                  participants: List[KookkieParticipant],
+                 name: str = "lekker koken",
                  open=False):
         self.id = id
+        self.name = name
         self.date = date
         self.kook_id = kook_id
         self.kook_name = kook_name
@@ -96,32 +99,6 @@ class KookkieSession(object):
     def participant_count(self) -> int:
         return len(self.participants)
 
-    def add_participant(self, id_generator=IDGenerator()) -> Result:
-        if self.participant_count() == MAX_NUMBER_OF_PARTICIPANTS:
-            return Failure(message='Cannot have more than 30 participants')
-        new_participant = KookkieParticipant.generate(id_generator)
-        self.participants.append(new_participant)
-        return Success(event=ParticipantWasAdded(self, new_participant))
-
-    def set_participant_email_addresses(self, email_addresses: EmailAddresses) -> Result:
-        updated_participants = []
-        failed_ids = []
-        for email_address in email_addresses.email_addresses:
-            participant = self._participant_by_id(email_address.participant_id)
-            if participant:
-                participant.email = email_address.email
-                updated_participants.append(participant)
-            else:
-                failed_ids.append(str(email_address.participant_id))
-
-        if len(failed_ids) > 0: return Failure(message="Invalid participant id: {}".format(', '.join(failed_ids)))
-        return Success(event=ParticipantEmailAddressesWereSet(kookkie_session=self,
-                                                              email_addresses=email_addresses.email_addresses))
-
-    def reset_participant_email_addresses(self) -> Result:
-        for participant in self.participants: participant.email = ''
-        return Success(event=ParticipantEmailAddressesWereReset(kookkie_session=self))
-
     def as_list_item(self) -> KookkieSessionListItem:
         return KookkieSessionListItem(
             id=self.id,
@@ -133,6 +110,15 @@ class KookkieSession(object):
     def is_open(self) -> bool:
         return self._open
 
+    @property
+    def room_name(self) -> str:
+        return re.sub(r'[ \t]', '', self.name.title())
+
+    def start(self, kook, jwt_builder):
+        if (kook.id != self.kook_id):
+            return Failure(message="This is not your kookkie")
+        return Success(started_kookkie=JoinInfo(kookkie=self, jwt=jwt_builder.for_kook(kook, self.room_name)))
+
     def open(self) -> 'KookkieSession':
         self._open = True
         return self
@@ -143,6 +129,16 @@ class KookkieSession(object):
 
     def is_accessible_for(self, kook):
         return self.kook_id == kook.id
+
+
+@dataclass(frozen=True)
+class JoinInfo:
+    kookkie: KookkieSession
+    jwt: bytes
+
+    @property
+    def room_name(self):
+        return self.kookkie.room_name
 
 
 @dataclass(frozen=True)

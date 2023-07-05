@@ -1,12 +1,9 @@
-from quiltz.domain.results import PartialSuccess
-
-from app.adapters.repositories import InMemoryKookkieSessionsRepository
-from testing import *
 from quiltz.domain.id import FixedIDGeneratorGenerating
+
 from app.domain.commands import *
 from domain.builders import *
-from app.domain import DummyContext
-from support.log_collector import log_collector
+from domain.repair.fake_jaas_jwt_builder import FakeJaasJwtBuilder
+from testing import *
 
 
 class TestCreateKookkieSession:
@@ -35,6 +32,27 @@ class TestCreateKookkieSession:
         assert result == Failure(message='failed to create kookkie session')
 
 
+class TestStartKookkieSession:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.repo = Mock(KookkieSessionsRepository)
+        self.jwt_builder = FakeJaasJwtBuilder()
+        self.start_kookkie_session = StartKookkieSession(
+            kookkie_session_repository=self.repo,
+            jaas_jwt_builder=self.jwt_builder
+        )
+
+    def test_creates_joining_info_with_kookkie_and_jwt(self):
+        kookkie_session = aValidKookkieSession()
+        self.repo.by_id_with_result.return_value = Success(kookkie_session=kookkie_session)
+        result = self.start_kookkie_session(kookkie_id=aValidID("12"), kook=aValidKook())
+        assert_that(result, equal_to(kookkie_session.start(aValidKook(), self.jwt_builder)))
+
+    def test_returns_not_found_when_kookkie_session_does_not_exist(self):
+        self.repo.by_id_with_result.return_value = Failure(message="not found")
+        result = self.start_kookkie_session(kookkie_id=aValidID("12"), kook=aValidKook())
+        assert_that(result, equal_to(Failure(message="not found")))
+
 class FixedMessengerFactoryCreating:
     def __init__(self, messenger):
         self.messenger = messenger
@@ -58,92 +76,3 @@ class TestJoinSession:
         self.repository.by_id_with_result.return_value = Success(kookkie_session=kookkie_session)
         assert self.join_session(aValidID(11)) == Success(kookkie_session=kookkie_session)
 
-
-class TestCloseSession:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.repository = Mock(KookkieSessionsRepository)
-        self.repository.by_id_with_result.return_value = Success(kookkie_session=aValidKookkieSession(id=aValidID('456')).open())
-        self.close_session = CloseSession(self.repository)
-        
-    def test_closes_an_open_session(self):
-        assert_that(self.close_session(aValidID('456'), aValidKook()).is_success(), equal_to(True))
-        self.repository.save.assert_any_call(event=KookkieSessionWasClosed(aValidKookkieSession(id=aValidID('456')).closed()))
-        self.repository.by_id_with_result.assert_called_once_with(aValidID('456'), aValidKook())
-
-    def test_does_not_save_when_session_does_not_exist(self):
-        self.repository.by_id_with_result.return_value = Failure(message='kookkie session not found')
-        assert_that(self.close_session(aValidID(''), aValidKook()),
-                    equal_to(Failure(message='kookkie session not found')))
-        self.repository.save.assert_not_called()
-
-    def test_resets_participants_email_addresses(self):
-        self.close_session(aValidID('456'), aValidKook())
-        self.repository.save.assert_any_call(event=ParticipantEmailAddressesWereReset(
-            kookkie_session=aValidKookkieSession(id=aValidID('456')).closed()))
-
-
-class TestOpenSession:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.repository = Mock(KookkieSessionsRepository)
-        self.repository.by_id_with_result.return_value = Success(kookkie_session=aValidKookkieSession(id=aValidID('456')))
-        self.open_session = OpenSession(self.repository)
-
-    def test_opens_a_closed_session(self):
-        assert_that(self.open_session(aValidID('456'), aValidKook()).is_success(), equal_to(True))
-        self.repository.save.assert_called_once_with(event=KookkieSessionWasOpened(aValidKookkieSession(id=aValidID('456')).open()))
-        self.repository.by_id_with_result.assert_called_once_with(aValidID('456'), aValidKook())
-
-    def test_does_not_save_when_session_does_not_exist(self):
-        self.repository.by_id_with_result.return_value = Failure(message='kookkie session not found')
-        assert_that(self.open_session(aValidID(''), aValidKook()),
-                    equal_to(Failure(message='kookkie session not found')))
-        self.repository.save.assert_not_called()
-
-
-
-class TestAddParticipant:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.id_generator = FixedIDGeneratorGenerating(aValidID('88'))
-        self.repository = Mock(KookkieSessionsRepository)
-        self.kookkie_session = aValidKookkieSession(id=aValidID('456'))
-        self.repository.by_id_with_result.return_value = Success(kookkie_session=self.kookkie_session)
-        self.add_participant = AddParticipant(kookkie_session_repository=self.repository,
-                                              id_generator=self.id_generator)
-
-    def test_adds_a_participant(self):
-        result = self.add_participant(aValidID('456'), aValidKook())
-        assert_that(result.is_success(), equal_to(True))
-        self.repository.save.assert_called_once_with(
-            self.kookkie_session.add_participant(self.id_generator).event)
-
-    def test_returns_failure_if_adding_fails(self):
-        kookkie_session = aValidKookkieSession(id=aValidID('456'), participants=[aValidKookkieParticipant() for i in range(30)])
-        self.repository.by_id_with_result.return_value = Success(kookkie_session=kookkie_session)
-        result = self.add_participant(aValidID('456'), aValidKook())
-        assert_that(result.is_success(), equal_to(False))
-        self.repository.save.assert_not_called()
-
-
-class TestSetParticipantEmailAddresses:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.repository = Mock(KookkieSessionsRepository)
-        self.kookkie_session = aValidKookkieSession(id=aValidID('456'), participants=[aValidKookkieParticipant(id=aValidID(55), email='')])
-        self.repository.by_id_with_result.return_value = Success(kookkie_session=self.kookkie_session)
-        self.set_participant_email_addresses = SetParticipantEmailAddresses(kookkie_session_repository=self.repository)
-
-    def test_sets_email_addresses(self):
-        email_data = dict(email_addresses=[dict(email='henk@mail.com', participant_id=str(aValidID('55')))])
-        result = self.set_participant_email_addresses(aValidID('456'), email_data)
-        assert_that(result, equal_to(Success()))
-        self.repository.save.assert_called_once_with(
-            self.kookkie_session.set_participant_email_addresses(EmailAddresses.from_data(email_data)).event)
-
-    def test_returns_failure_if_setting_fails(self):
-        email_data = dict(email_addresses=[dict(email='henk@mail.com', participant_id=str(aValidID('1')))])
-        result = self.set_participant_email_addresses(aValidID('456'), email_data)
-        assert_that(result, equal_to(Failure(message='Invalid participant id: {}'.format(str(aValidID('1'))))))
-        self.repository.save.assert_not_called()

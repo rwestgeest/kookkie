@@ -29,3 +29,6 @@ class Config(object):
     SESSION_REFRESH_EACH_REQUEST = True
     SESSION_COOKIE_SAMESITE = 'Strict'
     HTTPS_LINKS=getenv_as_bool('HTTPS_LINKS', True)
+    JITSI_APP_ID=os.getenv('JITSI_APP_ID', None)
+    JITSI_API_KEY=os.getenv('JITSI_API_KEY', None)
+    SECRETS_FROM=os.getenv('SECRETS_FROM', 'aws')

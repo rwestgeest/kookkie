@@ -17,6 +17,15 @@ class JaaSJwtBuilder:
 
     # Used as a delay for the nbf claim value.
 
+    @classmethod
+    def from_config(cls, config, secrets):
+        return JaaSJwtBuilder(
+            app_id=config.JITSI_APP_ID,
+            api_key=config.JITSI_API_KEY,
+            private_key=secrets.jitsi_private_key
+        )
+
+
     def __init__(self, app_id, api_key, private_key, id_generator=IDGenerator()) -> None:
         self.header = {'alg': 'RS256'}
         self.userClaims = {}

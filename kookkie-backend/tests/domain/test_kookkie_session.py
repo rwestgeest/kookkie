@@ -1,3 +1,4 @@
+from domain.repair.fake_jaas_jwt_builder import FakeJaasJwtBuilder
 from testing import *
 from quiltz.domain.id import FixedIDGeneratorGenerating
 from domain.builders import *
@@ -70,23 +71,29 @@ class TestEquality:
         assert aValidKookkieSession(id=ID.from_string("11111111111111111111111111111111")) != SomeObj(id=ID.from_string("11111111111111111111111111111111"))
 
 
-class TestAddingParticipants:
-    def test_adds_new_participant(self):
-        session = aValidKookkieSession(participants=[])
-        result = session.add_participant(FixedIDGeneratorGenerating(aValidID('12')))
-        assert_that(result, equal_to(Success(
-            event=ParticipantWasAdded(kookkie_session=session,
-                                      new_participant=aValidKookkieParticipant(id=aValidID('12'),
-                                                                               joining_id=aValidID('12'),
-                                                                               email='')))))
-        assert_that(session.participant_count(), equal_to(1))
+class TestStart:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.jwt_builder = FakeJaasJwtBuilder()
+        self.kookkie_session = aValidKookkieSession(kook_id=aValidID('100'))
 
-    def test_does_not_add_participants_beyond_maximum(self):
-        session = aValidKookkieSession(participants=[aValidKookkieParticipant() for i in range(30)])
-        result = session.add_participant()
-        assert_that(session.participant_count(), equal_to(30))
-        assert_that(result, equal_to(Failure(message='Cannot have more than 30 participants')))
-        
+    def test_creates_started_kookkie_session(self):
+        kook = aValidKook(id=aValidID('100'))
+        result = self.kookkie_session.start(kook, self.jwt_builder)
+        assert_that(result, equal_to(Success(started_kookkie=JoinInfo(kookkie=self.kookkie_session, jwt=self.jwt_builder.for_kook(kook, self.kookkie_session.room_name)))))
+
+    def test_fails_when_kook_not_the_kook_of_this_session(self):
+        kook = aValidKook(id=aValidID('999'))
+        result = self.kookkie_session.start(kook, self.jwt_builder)
+        assert_that(result, equal_to(Failure(message="This is not your kookkie")))
+
+class TestRoomName:
+    def test_is_camelized_description(self):
+        kookkie = aValidKookkieSession(name="lekker eten")
+        assert_that(kookkie.room_name, equal_to("LekkerEten"))
+    def test_skips_tabs(self):
+        kookkie = aValidKookkieSession(name="lekker\teten")
+        assert_that(kookkie.room_name, equal_to("LekkerEten"))
 
 class SomeObj(object):
     def __init__(self, id):

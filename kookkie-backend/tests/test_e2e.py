@@ -10,7 +10,7 @@ from app.utils.json_converters import json_dumps
 from quiltz.testsupport.smtp import StubSmtpServer
 from hamcrest import assert_that, contains_string, equal_to, is_in, is_not
 from support.probe import probe_that
-from app.adapters.routes import RouteBuilder
+from app.adapters.routes import RouteBuilder, as_kookkie_session
 from adapters.routes.routes_tests import get_csrf_token
 
 
@@ -28,6 +28,9 @@ class TestConfig(object):
     WTF_CSRF_ENABLED = True
     WTF_CSRF_HEADERS = ['X-XSRF-Token']
     HTTPS_LINKS = True
+    SECRETS_FROM = "aws"
+    JITSI_APP_ID = "bogus_app_id"
+    JITSI_API_KEY = "bogus_api_key"
 
 
 class XTestE2EAdmin:
@@ -72,6 +75,40 @@ class XTestE2EAdmin:
                     equal_to(dict(kook_session_counts=[{'count': 2, 'id': 'a8487ed5-39b4-48da-bf9a-a536e937a85a',
                                                                'name': 'Rob Westgeest'}])))
 
+class TestE2EKookkies:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.smtp_server = StubSmtpServer(hostname=TestConfig.SMTP_HOST, port=TestConfig.SMTP_PORT)
+        kook = aValidKook()
+        self.kook_repository = InMemoryKookRepository(
+            [kook])
+        self.kookkie_session_repository = InMemoryKookkieSessionsRepository.with_hard_coded_values()
+        app = main(config=TestConfig,
+                   kookkie_session_repository=self.kookkie_session_repository,
+                   kook_repository=self.kook_repository,
+                   metricsCollectorCreator=MetricsCollectorCreator.forTest())
+        self.client = app.test_client()
+        self.smtp_server.start()
+        self.kook_login = json_dumps(dict(username=kook.username, password='password'))
+        yield
+        self.smtp_server.stop()
+
+    def test_can_start_a_kookkie_session(self):
+        kookkie_session = self.save_kookkie_session(KookkieSessionCreator().create_with_id(**validKookkieSessionCreationParameters()).kookkie_session_created)
+        response = self.client.post('/api/login', data=self.kook_login, content_type='application/json')
+
+        response = self.client.post(f'/api/kookkie-sessions/{str(kookkie_session.id)}/start',data={},
+                                            content_type='application/json',
+                                            headers=csrf_headers(self.client))
+        assert_created(response)
+        body = json.loads(response.data)
+        assert_that(body['kookkie'], equal_to(as_kookkie_session(kookkie_session)))
+        assert_that(body['room_name'], equal_to(kookkie_session.room_name))
+
+
+    def save_kookkie_session(self, kookkie_session_created: KookkieSessionCreated):
+        self.kookkie_session_repository.save(kookkie_session_created)
+        return kookkie_session_created.kookkie_session
 
 class TestE2EKookManagement:
     @pytest.fixture(autouse=True)

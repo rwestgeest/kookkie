@@ -10,7 +10,7 @@ def aValidKookkieSessionListItem(**kwargs) -> KookkieSessionListItem:
 
 
 def aValidKookkieSession(**kwargs) -> KookkieSession:
-    valid_args = dict(id=aValidID('1'), date='2021-01-30', kook_id=aValidID('100'),
+    valid_args = dict(id=aValidID('1'), name='lekker koken', date='2021-01-30', kook_id=aValidID('100'),
                       kook_name='F. Kook', participants=[])
     return KookkieSession(**{**valid_args, **kwargs})
 
@@ -29,7 +29,6 @@ def aValidKookkieParticipant(**kwargs) -> KookkieParticipant:
     valid_args = dict(id=aValidID('33'), joining_id=aValidID('22'),
                       email='participant@email.com')
     return KookkieParticipant(**{**valid_args, **kwargs})
-
 
 
 def aValidKook(hashed_password=PasswordHasher().hash('password'), **kwargs) -> Kook:
