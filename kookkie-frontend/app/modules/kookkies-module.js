@@ -25,4 +25,7 @@ export class KookkiesModule extends ObservableModel {
             this.changed();
         });
     }
+    async start(kookkieId) {
+        return await this._kookkiesRepository.start(kookkieId);
+    }
 }

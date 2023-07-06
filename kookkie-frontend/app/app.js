@@ -11,16 +11,17 @@ import {SessionPage} from "./pages/session-page.js";
 import {SessionJoinPage} from "./pages/session-join-page.js";
 import {KookkiesModule} from "./modules/kookkies-module.js";
 import {ParticipantModule} from "./modules/participant-module.js";
+import {JitsiVideo} from "./components/jitsi-video.js";
 
 const router = new Router(window)
 const http = new FetchBasedHTTP();
 const userProfileModule = new UserProfileModule(new ApiBasedUserProfileRepository(http), router);
 const authenticationModule = new AuthenticationModule(userProfileModule, new ApiBasedAuthenticator(http));
 
-
 const kookkiesModule = new KookkiesModule(new ApiBasedKookkiesRepository(http));
 SignInPage(authenticationModule);
 SessionsPage(kookkiesModule, userProfileModule);
+JitsiVideo();
 const sessionPage = new SessionPage(kookkiesModule, userProfileModule);
 const sessionJoinPage = new SessionJoinPage(new ParticipantModule());
 

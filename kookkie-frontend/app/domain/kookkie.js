@@ -10,3 +10,11 @@ export class Kookkie {
         return `Kookkie ${this.name} by ${this.kook_name}`
     }
 }
+
+export class StartedKookkie {
+    constructor({jwt, room_name, kookkie}) {
+        this.jwt = jwt
+        this.room_name = room_name
+        this.kookkie = new Kookkie(kookkie)
+    }
+}

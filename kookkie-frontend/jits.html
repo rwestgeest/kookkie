@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="app/assets/main.css">
+    <script src='https://8x8.vc/external_api.js'></script>
+
+    <title>Test</title>
+
+</head>
+
+<body>
+
+<div id="meet" style="height:700px; width:100%; border: 1px solid black"></div>
+
+<script>
+    const domain = '8x8.vc';
+    const options = {
+        roomName: "vpaas-magic-cookie-6fddcef654f54c9eb12e42fe96ba432f/KikkererwtenMetKoesKoes",
+        jwt: "eyJhbGciOiJSUzI1NiIsImtpZCI6InZwYWFzLW1hZ2ljLWNvb2tpZS02ZmRkY2VmNjU0ZjU0YzllYjEyZTQyZmU5NmJhNDMyZi85OTczNTUiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE2ODg2Nzg2ODUsIm5iZlRpbWUiOjE2ODg2NzE0NzUsInJvb20iOiJLaWtrZXJlcnd0ZW5NZXRLb2VzS29lcyIsInN1YiI6InZwYWFzLW1hZ2ljLWNvb2tpZS02ZmRkY2VmNjU0ZjU0YzllYjEyZTQyZmU5NmJhNDMyZiIsImNvbnRleHQiOnsidXNlciI6eyJtb2RlcmF0b3IiOiJ0cnVlIiwibmFtZSI6IlJvYiBXZXN0Z2Vlc3QiLCJlbWFpbCI6InJvYkBxd2FuLmV1IiwiaWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMDAifSwiZmVhdHVyZXMiOnsibGl2ZXN0cmVhbWluZyI6ImZhbHNlIiwicmVjb3JkaW5nIjoiZmFsc2UiLCJvdXRib3VuZC1jYWxsIjoiZmFsc2UiLCJ0cmFuc2NyaXB0aW9uIjoiZmFsc2UifX0sImlzcyI6ImNoYXQiLCJhdWQiOiJqaXRzaSJ9.B6GIErNvzNHJvNR3XhVmBf98LJXneNfouO3MUszIe3QTng_m2NK1CHKfZF6KH6LB4wyyDZlRIPhsjoAa_DEx8VV1_6TpH922zJPPBlckaSWYowPV2autg4LZxhXsVO1xe9ctSuoMyDQsAzNmDNxuMIhyJGXrt7a4_fQOkSO7dZp-bUju1_GceWdIaU8FBAvNSOuM9To7VPgQZQPkPyA93_1h0irj-mOBr4xNmMTswq0SFNIsWZ7iNDTbZb-X1wBc7OiqzL52weJBhGVpwzvWg5UpkZJVwqY1cBwTVgPfEk4waZurF34zSdfVxOM7teczehBSWA3UZ-z7vXh437cgeg",
+        parentNode: document.getElementById("meet")
+    };
+    const api= new JitsiMeetExternalAPI(domain, options);
+
+</script>
+
+</body>
+
+</html>

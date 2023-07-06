@@ -22,11 +22,15 @@ export class Component extends HTMLElement {
     attributeChangedCallback(property, oldValue, newValue) {
         if (oldValue === newValue) return;
         this[property] = newValue;
-        this.render();
     }
+
     connectedCallback() {
         this.render();
         this.onInit();
+    }
+
+    html() {
+        return `<p>define the html for this component please</p>`
     }
 
     onInit() { }
