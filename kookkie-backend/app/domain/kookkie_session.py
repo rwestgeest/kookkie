@@ -56,15 +56,9 @@ class KookkieSessionCreator:
 class KookkieSessionListItem:
     id: ID
     date: date
-    kook_id: ID
-    is_open: bool
+    kook_name: str
+    name: str
 
-    def as_kookkie_session(self) -> 'KookkieSession':
-        return KookkieSession(self.id,
-                              self.date,
-                              self.kook_id, '',
-                              [],
-                              self.is_open)
 
 
 @dataclass(init=False)
@@ -103,8 +97,8 @@ class KookkieSession(object):
         return KookkieSessionListItem(
             id=self.id,
             date=self.date,
-            kook_id=self.kook_id,
-            is_open=self.is_open)
+            kook_name=self.kook_name,
+            name=self.name)
 
     @property
     def is_open(self) -> bool:

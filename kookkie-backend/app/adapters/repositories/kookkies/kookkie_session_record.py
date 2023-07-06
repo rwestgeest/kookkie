@@ -6,6 +6,7 @@ class KookkieSession(Model):
     date = db.Column(db.String(140))
     kook_id = db.Column(db.String(140), index=True)
     kook_name = db.Column(db.String(140))
+    name = db.Column(db.String(140))
     open = db.Column(db.Boolean)
     participants = db.relationship('KookkieParticipant', backref='session', lazy=True)
 

@@ -1,4 +1,9 @@
+from flask_migrate import upgrade
+from quiltz.messaging.engine.smtp import SMTPBasedMessageEngine
+
 from app import create_app
+from app.adapters.metrics import MetricsCollectorCreator
+from app.adapters.repositories import AWSBasedSecrets, LocalSecrets, InMemoryKookkieSessionsRepository
 from app.adapters.routes import (
     KookkieSessionRoutes,
     ParticipantRoutes,
@@ -8,25 +13,20 @@ from app.adapters.routes import (
     FlaskLoginBasedCurrentUserRepository,
     VersionRoutes)
 from app.domain import MessengerFactory, CountingKookkieSessionRepository
+from app.domain.repositories import InMemoryKookRepository
 from app.utils.jaas_jwt_builder import JaaSJwtBuilder
 from config import Config
-from app.adapters.repositories import DBKookkieSessionsRepository, DBKookRepository, AWSBasedSecrets, LocalSecrets
-from app.adapters.metrics import MetricsCollectorCreator
-from quiltz.messaging.engine.smtp import SMTPBasedMessageEngine
-from flask_migrate import upgrade
+
 
 def secrets_from_config(config):
-    match config.SECRETS_FROM:
-        case "aws":
-            return AWSBasedSecrets()
-        case "local":
-            return LocalSecrets()
-        case _:
-            raise "No Secrets configured"
+    if config.SECRETS_FROM == "aws":
+        return AWSBasedSecrets()
+    return LocalSecrets(config.SECRETS_FROM)
+
 
 def main(config=Config,
-         kookkie_session_repository=DBKookkieSessionsRepository(),
-         kook_repository=DBKookRepository(),
+         kookkie_session_repository=InMemoryKookkieSessionsRepository.with_hard_coded_values(),
+         kook_repository=InMemoryKookRepository([]).with_admins(),
          metricsCollectorCreator=MetricsCollectorCreator.forProd()):
 
     application = create_app(config)

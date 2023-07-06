@@ -19,6 +19,10 @@ class JaaSJwtBuilder:
 
     @classmethod
     def from_config(cls, config, secrets):
+        if config.JITSI_API_KEY is None:
+            raise "JITSI_API_KEY not configured"
+        if config.JITSI_APP_ID is None:
+            raise "JITSI_APP_ID not configured"
         return JaaSJwtBuilder(
             app_id=config.JITSI_APP_ID,
             api_key=config.JITSI_API_KEY,

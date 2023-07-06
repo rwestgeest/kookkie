@@ -25,6 +25,7 @@ services:
     image: python:3.10-alpine
     volumes:
       - ./kookkie-backend/:/home/work
+      - ~/.ssh/jitsi.pk:/home/work/.ssh/jitsi.pk
     environment:
       - SMTP_HOST=kookkie-stub-smtp-server
       - SMTP_PORT=2525
@@ -32,6 +33,9 @@ services:
       - HTTPS_LINKS=False
       - METRICS_HOST=kookkie-metrics
       - HOME=/home/work
+      - JITSI_APP_ID
+      - JITSI_API_KEY
+      - SECRETS_FROM=.ssh/jitsi.pk
     user: ${CURRENT_UID}:${CURRENT_GID}
     working_dir: /home/work
     command: ./run-dev.sh

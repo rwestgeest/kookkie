@@ -21,11 +21,11 @@ from typing import Optional, Iterable, List
 
 hard_coded_sessions = [
     KookkieSession(id=ID.from_string('ae5d4c45-3b46-4ad5-b55a-ba25696b9e85'), date="2020-01-11",
-                   kook_id=ID.from_string('a8487ed5-39b4-48da-bf9a-a536e937a85a'),
-                   kook_name='Rob Westgeest', participants=[]),
+                   kook_id=ID.from_string('f894571d-5707-4ea1-86f5-1d421ed37b91'),
+                   kook_name='Rob Westgeest', name='Kikkererwten met koes koes', participants=[]),
     KookkieSession(id=ID.from_string('590a41e9-ae9c-4ba5-b48f-ceef9d62fa70'), date="2020-03-20",
                    kook_id=ID.from_string('a8487ed5-39b4-48da-bf9a-a536e937a85a'),
-                   kook_name='Marc Evers', participants=[])
+                   kook_name='Anton Brunt', name='Meat party', participants=[])
 ]
 
 KOOKKIE_SESSION_NOT_FOUND = Failure(message='kookkie not found')
@@ -143,6 +143,7 @@ class DBKookkieSessionsRepository(KookkieSessionsRepository):
             open=kookkie_session.is_open,
             kook_id=str(kookkie_session.kook_id),
             kook_name=kookkie_session.kook_name,
+            name=kookkie_session.name,
             participants=[self._to_participant_record(participant) for participant in kookkie_session.participants])
         db.session.add(record)
 
@@ -186,8 +187,8 @@ def as_kookkie_session_list_item(record: KookkieSessionRecord) -> KookkieSession
     return KookkieSessionListItem(
         id=ID.from_string(record.id),
         date=record.date,
-        kook_id=ID.from_string(record.kook_id),
-        is_open=record.open)
+        kook_name=record.kook_name,
+        name=record.name)
 
 
 def as_kookkie_session(record: KookkieSessionRecord) -> KookkieSession:

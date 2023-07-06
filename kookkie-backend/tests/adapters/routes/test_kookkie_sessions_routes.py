@@ -1,3 +1,4 @@
+from app.adapters.repositories import InMemoryKookkieSessionsRepository
 from testing import *
 from app.utils.json_converters import json_dumps, json_loads
 from domain.builders import *
@@ -31,6 +32,26 @@ class TestKookkieSessionRoutes_Post(RoutesTests):
         response = self.client.post('/api/kookkie-sessions', data='{}', content_type='application/json')
         assert response.status == '400 BAD REQUEST'
         assert json_loads(response.data) == dict(message="some-error-message")
+
+
+class TestKookkieSessionRoutes_GetAll(RoutesTests):
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.setup_app()
+        self.do_signin()
+
+    def create_routes(self):
+        self.repository = InMemoryKookkieSessionsRepository(kookkie_sessions=[
+            aValidKookkieSession(id=aValidID("123"), kook_id=aValidID("11")),
+            aValidKookkieSession(id=aValidID("456"), kook_id=aValidKook().id)
+        ])
+        return create_kookkie_session_routes(kookkie_session_repository=self.repository, current_user_repository=self.current_user_repository).register(self.application)
+
+    def test_returns_kookkies_for_the_current_signed_in_kook(self):
+        response = self.client.get('/api/kookkie-sessions', content_type='application/json')
+        assert_that(response.status, equal_to('200 OK'))
+        assert_that(json_loads(response.data), equal_to(as_kookkie_list([aValidKookkieSession(id=aValidID("456"), kook_id=aValidKook().id).as_list_item()])))
+
 
 
 class TestKookkieSessionRoutes_Start(RoutesTests):

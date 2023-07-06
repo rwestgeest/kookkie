@@ -1,6 +1,6 @@
 from typing import TypeAlias, Type
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, CSRFError
@@ -34,7 +34,12 @@ def create_app(config: Type[Config]):
     app.config.from_object(config)
     app.wsgi_app = TransLogger(ProxyFix(app.wsgi_app, x_for=nr_of_load_balancers, x_proto=0))  # type: ignore
     csrf = CSRFProtect(app)
-    
+    app.logger.setLevel(logging.DEBUG)
+    @app.after_request
+    def log_request_info(f):
+        app.logger.debug('Headers: %s', request.headers)
+        return f
+
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
         return jsonify(message='please reload the page or sign in again'), 400 

@@ -47,7 +47,7 @@ class TestCreateWithId:
     def test_fails_when_participant_count_is_not_an_integer(self):
         assert self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count='bla')) == Failure(message='participant_count is not an integer value')
 
-    def test_fails_when_participant_count_is_more_than_30(self):
+    def test_fafils_when_participant_count_is_more_than_30(self):
         assert self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count='31')) == Failure(message='participant_count should be between 1 and 30')
 
     def test_fails_when_participant_count_is_less_than_1(self):
@@ -70,6 +70,16 @@ class TestEquality:
     def test_returns_false_if_other_is_not_a_kookkie_session(self):
         assert aValidKookkieSession(id=ID.from_string("11111111111111111111111111111111")) != SomeObj(id=ID.from_string("11111111111111111111111111111111"))
 
+class TestAsListItem:
+    def test_as_list_item_returns_a_list_item_with_id_name_date_and_kookkie_name(self):
+        kookkie= aValidKookkieSession()
+        list_item = kookkie.as_list_item()
+        assert_that(list_item, equal_to(KookkieSessionListItem(
+            id=kookkie.id,
+            date=kookkie.date,
+            kook_name=kookkie.kook_name,
+            name=kookkie.name
+        )))
 
 class TestStart:
     @pytest.fixture(autouse=True)

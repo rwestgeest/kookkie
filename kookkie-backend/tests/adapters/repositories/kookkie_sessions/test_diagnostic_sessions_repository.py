@@ -97,7 +97,7 @@ class TestInMemoryKookkieSessionsRepositoryWithHardcodedValues:
         self.repo = InMemoryKookkieSessionsRepository.with_hard_coded_values()
         
     def test_all_return_all_kookkie_sessions_in_the_repository(self):
-        assert_that(self.repo.all(aValidKook(id=admins[0].id)), equal_to([s.as_list_item() for s in hard_coded_sessions]))
+        assert_that(self.repo.all(aValidKook(id=admins[0].id)), equal_to([hard_coded_sessions[1].as_list_item()]))
 
 
 class TestDbKookkieSessionsRepositorySaveCreated(DbKookkieSessionsRepositoryTest):

@@ -36,6 +36,9 @@ services:
       - METRICS_HOST=kookkie-cloudwatch-agent
       - AWS_CLOUDWATCH
       - ENABLE_CSRF
+      - JITSI_APP_ID
+      - JITSI_API_KEY
+      - SECRETS_FROM
     volumes:
       - prod_data:/opt/kookkie-backend/data
     ports:

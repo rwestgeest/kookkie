@@ -30,6 +30,10 @@ class AWSBasedSecrets:
         return get_secret_value_response['SecretString']
 
 class LocalSecrets:
+    def __init__(self, location):
+        self._location = location
     @property
     def jitsi_private_key(self):
-        return os.getenv("JITSI_PRIVATE_KEY")
+        with open(self._location) as f:
+           return f.read() 
+        

@@ -3,18 +3,10 @@ from datetime import date, timezone, datetime
 from app.domain import ID
 from app import db
 from app.domain import Kook, PasswordResetToken, anonymize
-from app.domain.repositories import KookRepository, FACILITATOR_NOT_FOUND
+from app.domain.repositories import KookRepository, FACILITATOR_NOT_FOUND, admins
 from quiltz.domain.results import Success, Result
 from .kook_record import Kook as KookRecord
 import logging
-
-admins = [
-    Kook(id=ID.from_string('a8487ed5-39b4-48da-bf9a-a536e937a85a'), email='anton@qwan.eu', name='Anton Brunt',
-         is_admin=True, hashed_password=
-                '$pbkdf2-sha256$29000$SknJec95DwFASKk1hlCq9Q$wsQyq5xXnwqr5sLIdVaLH.omXpnlrJyPQuwxtARyNlQ'),
-    Kook(id=ID.from_string('f894571d-5707-4ea1-86f5-1d421ed37b91'), email='rob@qwan.eu', name='Rob Westgeest',
-         is_admin=True, hashed_password=
-                '$pbkdf2-sha256$29000$SknJec95DwFASKk1hlCq9Q$wsQyq5xXnwqr5sLIdVaLH.omXpnlrJyPQuwxtARyNlQ')]
 
 
 class DBKookRepository(KookRepository):
