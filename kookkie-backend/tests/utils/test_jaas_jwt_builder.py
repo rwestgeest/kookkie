@@ -40,7 +40,7 @@ class AbstractJaasJwtTest:
 
     def test_contains_room_name(self):
         claims = claims_in(self.generate_jwt())
-        assert_that(claims['room'], equal_to(self.room_name))
+        assert_that(claims['room'], equal_to(f"{self.app_id}/{self.room_name}"))
 
     def generate_jwt(self):
         pass
