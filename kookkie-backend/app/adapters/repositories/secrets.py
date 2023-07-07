@@ -29,11 +29,12 @@ class AWSBasedSecrets:
         # Decrypts secret using the associated KMS key.
         return get_secret_value_response['SecretString']
 
+
 class LocalSecrets:
     def __init__(self, location):
         self._location = location
+
     @property
     def jitsi_private_key(self):
         with open(self._location) as f:
-           return f.read() 
-        
+            return f.read()
