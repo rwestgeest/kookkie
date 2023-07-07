@@ -12,7 +12,6 @@ describe(SignInPage, () => {
 
             let sip = document.createElement('sign-in-page');
             document.body.appendChild(sip);
-            console.log(sip._shadowRoot);
             expect(document.querySelector("#kookkie-signin").textContent).toContain("Please sign in");
 
         });

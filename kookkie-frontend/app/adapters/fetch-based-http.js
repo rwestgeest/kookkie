@@ -20,7 +20,6 @@ export class FetchBasedHTTP {
 
     async post(url, body) {
         const response = {}
-        console.log(document.cookie);
         const fetchResponse = await fetch(url, {
             method: "POST",
             body: JSON.stringify(body),

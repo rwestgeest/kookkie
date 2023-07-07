@@ -7,7 +7,6 @@ export class SessionPage {
 
     render({id}) {
         let profile = this.userProfileModule.userProfile;
-        console.log(profile);
         let kookkie = this.kookkiesModule.byId(id);
         document.querySelector("#router-view").innerHTML = `
             <style>

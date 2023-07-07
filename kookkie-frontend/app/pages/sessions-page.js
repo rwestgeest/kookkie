@@ -27,12 +27,6 @@ export function SessionsPage(kookkiesModule, userProfileModule) {
                 `
         }
 
-        whenRendered() {
-            this.elementById('kookkies-listt').addEventListener('click', e => {
-                console.log('click', e.target);
-            });
-        }
-
         update() {
             this.kookkies = this.kookkiesModule.kookkies;
             this.render();
