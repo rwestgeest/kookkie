@@ -1,8 +1,8 @@
-from testing import *
-from app.utils.json_converters import json_dumps, json_loads
-from domain.builders import *
-from app.domain import *
 from app.adapters.routes import *
+from app.utils.json_converters import json_loads
+from quiltz.domain.id.testbuilders import aValidID
+from domain.builders import aValidKookkieSession
+from testing import *
 from .routes_tests import RoutesTests, get_csrf_token
 
 
@@ -35,6 +35,7 @@ class TestMappingJoiningInfo:
         assert_that(as_joining_info(aValidKookkieSession(id=aValidID('1'), date='2021-01-30',
                       kook_name='F. Kook')), equal_to(dict(id=str(aValidID('1')), date='2021-01-30',
                       kook_name='F. Kook')))
+
 
 class TestParticipantRoutes_Joining_CSRF(RoutesTests):
     @pytest.fixture(autouse=True)

@@ -1,5 +1,7 @@
 import time, uuid
-from authlib.jose import jwt
+from typing import Dict, Any
+
+from authlib.jose import jwt # type: ignore
 from quiltz.domain.id import IDGenerator
 
 from app.domain import Kook
@@ -32,9 +34,9 @@ class JaaSJwtBuilder:
 
     def __init__(self, app_id, api_key, private_key, id_generator=IDGenerator()) -> None:
         self.header = {'alg': 'RS256'}
-        self.userClaims = {}
-        self.featureClaims = {}
-        self.payloadClaims = {}
+        self.userClaims: Dict[str, Any] = {}
+        self.featureClaims: Dict[str, Any] = {}
+        self.payloadClaims: Dict[str, Any] = {}
         self.id_generator = id_generator
         self.app_id = app_id
         self.api_key = api_key

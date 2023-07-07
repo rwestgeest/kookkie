@@ -1,8 +1,9 @@
+from app.domain import PasswordResetToken
 from domain.commands.null_command import NullCommand
 from testing import *
 from flask_login import login_required
 from app.utils.json_converters import json_dumps, json_loads
-from domain.builders import *
+from domain.builders import aValidKook, aValidID
 from app.adapters.routes import *
 from .dummy_authenticator import StubbedKookRepository
 from .routes_tests import RoutesTests, get_csrf_token, localhost_context

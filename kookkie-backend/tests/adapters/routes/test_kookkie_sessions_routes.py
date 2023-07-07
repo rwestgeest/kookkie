@@ -1,10 +1,9 @@
 from app.adapters.repositories import InMemoryKookkieSessionsRepository
-from testing import *
-from app.utils.json_converters import json_dumps, json_loads
-from domain.builders import *
-from app.domain import *
 from app.adapters.routes import *
-from .routes_tests import RoutesTests, get_csrf_token, localhost_context
+from app.utils.json_converters import json_dumps, json_loads
+from domain.builders import aValidID, validKookkieSessionCreationParameters, aValidKook, aValidKookkieSession
+from testing import *
+from .routes_tests import RoutesTests
 
 
 class TestKookkieSessionRoutes_Post(RoutesTests):
@@ -92,7 +91,7 @@ class TestMapStartedKookkie:
 
 class TestMapKookkie:
     def test_contains_all_kookkie_attributes(self):
-        kookkie_session: KookkieSession = aValidKookkieSession()
+        kookkie_session = aValidKookkieSession()
         result = as_kookkie_session(kookkie_session)
         assert_that(result, equal_to(dict(id=str(kookkie_session.id),
                                           name=kookkie_session.name,
