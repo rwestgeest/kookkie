@@ -25,7 +25,7 @@ services:
         max-size: "500k"
         max-file: "3"
   kookkie-backend:
-    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-backend:0.0.5
+    image: 525595969507.dkr.ecr.eu-central-1.amazonaws.com/qwan/kookkie-backend:0.0.6
     environment:
       - SMTP_HOST
       - SMTP_PORT
