@@ -34,11 +34,6 @@ def create_app(config: Type[Config]):
     app.config.from_object(config)
     app.wsgi_app = TransLogger(ProxyFix(app.wsgi_app, x_for=nr_of_load_balancers, x_proto=0))  # type: ignore
     csrf = CSRFProtect(app)
-    app.logger.setLevel(logging.DEBUG)
-    @app.after_request
-    def log_request_info(f):
-        app.logger.debug('Headers: %s', request.headers)
-        return f
 
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
