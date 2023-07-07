@@ -14,6 +14,9 @@ def aValidKookkieSession(**kwargs) -> KookkieSession:
                       kook_name='F. Kook', participants=[])
     return KookkieSession(**{**valid_args, **kwargs})
 
+def aValidJoinInfo(**kwargs) -> JoinInfo:
+    valid_args = dict(kookkie=aValidKookkieSession(), jwt=b'some_jwt', room_name="someroom")
+    return JoinInfo(**{**valid_args, **kwargs})  # type: ignore
 
 def anOpenKookkieSession(**kwargs) -> KookkieSession:
     extra_args = dict(open=True)

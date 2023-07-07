@@ -51,7 +51,7 @@ class JaaSJwtBuilder:
             .withOutboundCallEnabled(False) \
             .withTranscriptionEnabled(False) \
             .withModerator(False) \
-            .withAppIdQualifiedRoomName('*') \
+            .withRoomName('*') \
             .withAppID(self.app_id) \
             .withApiKey(self.api_key)
 
@@ -154,13 +154,13 @@ class JaaSJwtBuilder:
         self.payloadClaims['nbfTime'] = nbfTime
         return self
 
-    def withAppIdQualifiedRoomName(self, roomName):
+    def withRoomName(self, roomName):
         """
         Returns the JaaSJwtBuilder with room claim set.
 
         :param roomName A string representing the room to join.
         """
-        self.payloadClaims['room'] = self.qualified_room(roomName)
+        self.payloadClaims['room'] = roomName
         return self
 
     def withAppID(self, AppId):
@@ -183,7 +183,7 @@ class JaaSJwtBuilder:
 
     def for_kook(self, kook: Kook, room: str) -> bytes:
         return self.withDefaults()\
-            .withAppIdQualifiedRoomName(room) \
+            .withRoomName(room) \
             .withUserName(kook.name) \
             .withUserEmail(kook.email) \
             .withUserId(str(kook.id)) \
@@ -192,7 +192,7 @@ class JaaSJwtBuilder:
 
     def for_guest(self, name: str, room: str) -> bytes:
         return self.withDefaults()\
-            .withAppIdQualifiedRoomName(room) \
+            .withRoomName(room) \
             .withUserName(name) \
             .withUserEmail(f"{name}@kookkie.com") \
             .withModerator(False) \

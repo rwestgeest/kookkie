@@ -40,7 +40,7 @@ class AbstractJaasJwtTest:
 
     def test_contains_room_name(self):
         claims = claims_in(self.generate_jwt())
-        assert_that(claims['room'], equal_to(f"{self.app_id}/{self.room_name}"))
+        assert_that(claims['room'], equal_to(self.room_name))
 
     def generate_jwt(self):
         pass
@@ -92,7 +92,7 @@ class AbstractJaasJoinInfoTest:
 
     def test_contains_jwt_with_qualified_room_name(self):
         join_info = self.create_join_info()
-        assert_that(claims_in(join_info.jwt)['room'], equal_to(self.jassJwt.qualified_room(self.kookkie_session.room_name)))
+        assert_that(claims_in(join_info.jwt)['room'], equal_to(self.kookkie_session.room_name))
 
     def create_join_info(self):
         pass

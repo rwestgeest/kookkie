@@ -103,7 +103,7 @@ class TestE2EKookkies:
         assert_created(response)
         body = json.loads(response.data)
         assert_that(body['kookkie'], equal_to(as_kookkie_session(kookkie_session)))
-        assert_that(body['room_name'], equal_to(kookkie_session.room_name))
+        assert_that(body['room_name'], equal_to(f"{TestConfig.JITSI_APP_ID}/{kookkie_session.room_name}"))
 
 
     def save_kookkie_session(self, kookkie_session_created: KookkieSessionCreated):

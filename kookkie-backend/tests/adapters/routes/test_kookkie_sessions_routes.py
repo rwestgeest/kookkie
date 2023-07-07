@@ -1,7 +1,8 @@
 from app.adapters.repositories import InMemoryKookkieSessionsRepository
 from app.adapters.routes import *
 from app.utils.json_converters import json_dumps, json_loads
-from domain.builders import aValidID, validKookkieSessionCreationParameters, aValidKook, aValidKookkieSession
+from domain.builders import aValidID, validKookkieSessionCreationParameters, aValidKook, aValidKookkieSession, \
+    aValidJoinInfo
 from testing import *
 from .routes_tests import RoutesTests
 
@@ -61,7 +62,8 @@ class TestKookkieSessionRoutes_Start(RoutesTests):
 
     def create_routes(self):
         self.start_kookkie_session = Mock()
-        self.start_kookkie_session.return_value = Success(started_kookkie=JoinInfo(kookkie=aValidKookkieSession(), jwt=b'some_jwt'))
+        self.returned_join_info = aValidJoinInfo()
+        self.start_kookkie_session.return_value = Success(started_kookkie=self.returned_join_info)
 
         return create_kookkie_session_routes(start_kookkie_session=self.start_kookkie_session,
                                              current_user_repository=self.current_user_repository)\
@@ -74,7 +76,7 @@ class TestKookkieSessionRoutes_Start(RoutesTests):
     def test_post_kookkie_start_results_in_joining_info_when_successful(self):
         response = self.client.post('/api/kookkie-sessions/{}/start'.format(str(aValidID(123))), data='{}', content_type='application/json')
         assert response.status == '201 CREATED'
-        assert_that(json_loads(response.data), equal_to(dict(as_started_kookkie(JoinInfo(kookkie=aValidKookkieSession(), jwt=b'some_jwt')))))
+        assert_that(json_loads(response.data), equal_to(dict(as_started_kookkie(self.returned_join_info))))
 
     def test_post_kookkie_start_responds_with_an_error_when_command_fails(self):
         self.start_kookkie_session.return_value = Failure(message="some-error-message")
@@ -86,8 +88,8 @@ class TestKookkieSessionRoutes_Start(RoutesTests):
 class TestMapStartedKookkie:
     def test_contains_the_kookkie(self):
         kookkie_session = aValidKookkieSession()
-        result = as_started_kookkie(JoinInfo(kookkie_session, b'jwt'))
-        assert_that(result, equal_to(dict(jwt='jwt', room_name=kookkie_session.room_name, kookkie=as_kookkie_session(kookkie_session))))
+        result = as_started_kookkie(aValidJoinInfo(kookkie=kookkie_session, jwt=b'jwt', room_name="some_room"))
+        assert_that(result, equal_to(dict(jwt='jwt', room_name='some_room', kookkie=as_kookkie_session(kookkie_session))))
 
 class TestMapKookkie:
     def test_contains_all_kookkie_attributes(self):

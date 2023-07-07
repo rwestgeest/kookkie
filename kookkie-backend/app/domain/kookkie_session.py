@@ -111,7 +111,7 @@ class KookkieSession(object):
     def start(self, kook, jwt_builder):
         if (kook.id != self.kook_id):
             return Failure(message="This is not your kookkie")
-        return Success(started_kookkie=JoinInfo(kookkie=self, jwt=jwt_builder.for_kook(kook, self.room_name)))
+        return Success(started_kookkie=jwt_builder.join_info_for_kook(kook, self))
 
     def open(self) -> 'KookkieSession':
         self._open = True
