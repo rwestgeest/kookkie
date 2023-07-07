@@ -3,7 +3,7 @@ from typing import Dict
 from authlib.jose import jwt, JWTClaims  # type: ignore
 
 from app.utils.jaas_jwt_builder import JaaSJwtBuilder
-from domain.builders import aValidKook
+from domain.builders import aValidKook, aValidKookkieSession
 from quiltz.domain.id import FixedIDGeneratorGenerating
 from quiltz.domain.id.testbuilders import aValidID
 from testing import *
@@ -75,6 +75,53 @@ class TestJaasJwtGenerationForGuest(AbstractJaasJwtTest):
             email = "harry@kookkie.com",
             id = str(aValidID(22)),
         )))
+
+class AbstractJaasJoinInfoTest:
+    @pytest.fixture(autouse=True)
+    def setup(self) -> None:
+        self.kook = aValidKook()
+        self.kookkie_session = aValidKookkieSession()
+        self.app_id = "my_app_id"
+        self.api_key = "api_key"
+        self.jassJwt: JaaSJwtBuilder = JaaSJwtBuilder(
+            app_id=self.app_id,
+            api_key=self.api_key,
+            private_key=private_key(),
+            id_generator=FixedIDGeneratorGenerating(aValidID("22"))
+        )
+
+    def test_contains_jwt_with_qualified_room_name(self):
+        join_info = self.create_join_info()
+        assert_that(claims_in(join_info.jwt)['room'], equal_to(self.jassJwt.qualified_room(self.kookkie_session.room_name)))
+
+    def create_join_info(self):
+        pass
+
+
+class TestJoinInfoForKook(AbstractJaasJoinInfoTest):
+    def create_join_info(self):
+        return self.jassJwt.join_info_for_kook(self.kook, self.kookkie_session)
+
+    def test_contains_jwt_for_kook(self):
+        join_info = self.create_join_info()
+        assert_that(claims_in(join_info.jwt)['context']['user']['name'], equal_to(self.kook.name))
+
+    def test_contains_the_qualified_room_name(self):
+        join_info = self.create_join_info()
+        assert_that(join_info.room_name, equal_to(self.jassJwt.qualified_room(self.kookkie_session.room_name)))
+
+
+class TestJoinInfoForGuest(AbstractJaasJoinInfoTest):
+    def create_join_info(self):
+        return self.jassJwt.join_info_for_guest("harry", self.kookkie_session)
+
+    def test_contains_jwt_for_kook(self):
+        join_info = self.create_join_info()
+        assert_that(claims_in(join_info.jwt)['context']['user']['name'], equal_to("harry"))
+
+    def test_contains_the_qualified_room_name(self):
+        join_info = self.create_join_info()
+        assert_that(join_info.room_name, equal_to(self.jassJwt.qualified_room(self.kookkie_session.room_name)))
 
 
 def claims_in(jass_jwt: bytes) -> JWTClaims:

@@ -90,7 +90,7 @@ class TestStart:
     def test_creates_started_kookkie_session(self):
         kook = aValidKook(id=aValidID('100'))
         result = self.kookkie_session.start(kook, self.jwt_builder)
-        assert_that(result, equal_to(Success(started_kookkie=JoinInfo(kookkie=self.kookkie_session, jwt=self.jwt_builder.for_kook(kook, self.kookkie_session.room_name)))))
+        assert_that(result, equal_to(Success(started_kookkie=self.jwt_builder.join_info_for_kook(kook, self.kookkie_session))))
 
     def test_fails_when_kook_not_the_kook_of_this_session(self):
         kook = aValidKook(id=aValidID('999'))

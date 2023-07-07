@@ -129,10 +129,8 @@ class KookkieSession(object):
 class JoinInfo:
     kookkie: KookkieSession
     jwt: bytes
+    room_name: str
 
-    @property
-    def room_name(self):
-        return self.kookkie.room_name
 
 
 @dataclass(frozen=True)

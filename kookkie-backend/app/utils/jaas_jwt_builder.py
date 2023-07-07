@@ -4,7 +4,7 @@ from typing import Dict, Any
 from authlib.jose import jwt # type: ignore
 from quiltz.domain.id import IDGenerator
 
-from app.domain import Kook
+from app.domain import Kook, JoinInfo, KookkieSession
 
 
 class JaaSJwtBuilder:
@@ -160,7 +160,7 @@ class JaaSJwtBuilder:
 
         :param roomName A string representing the room to join.
         """
-        self.payloadClaims['room'] = f"{self.app_id}/{roomName}"
+        self.payloadClaims['room'] = self.qualified_room(roomName)
         return self
 
     def withAppID(self, AppId):
@@ -199,6 +199,13 @@ class JaaSJwtBuilder:
             .withUserId(str(self.id_generator.generate_id()))\
             .signWith(self.private_key)
 
+    def join_info_for_kook(self, kook: Kook, kookkie_session: KookkieSession) -> JoinInfo:
+        return JoinInfo(kookkie_session, self.for_kook(kook, kookkie_session.room_name), self.qualified_room(kookkie_session.room_name))
+
+    def join_info_for_guest(self, guest_name: str, kookkie_session: KookkieSession):
+        return JoinInfo(kookkie_session, self.for_guest(guest_name, kookkie_session.room_name),
+                        self.qualified_room(kookkie_session.room_name))
+
     def signWith(self, key) -> bytes:
         """
         Returns a signed JWT.
@@ -210,4 +217,7 @@ class JaaSJwtBuilder:
         self.payloadClaims['iss'] = 'chat'
         self.payloadClaims['aud'] = 'jitsi'
         return jwt.encode(self.header, self.payloadClaims, key)
+
+    def qualified_room(self, room_name):
+        return f"{self.app_id}/{room_name}"
 
