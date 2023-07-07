@@ -17,6 +17,7 @@ export class SessionPage {
             <h1>Kookkie</h1>
             <p><span class="kookkie-name">${kookkie.name}</span>
             <span class="kook-name">${kookkie.kook_name}</span> </p>
+            <p><a href="#/join/${kookkie.id}">${window.location.origin}/#/join/${kookkie.id}</a></p>
             <div id="videowindow">
                  <button id="open-meeting-button">open</button>
                  <p id="open-meeting-throbber" hidden="true">opening</p>
