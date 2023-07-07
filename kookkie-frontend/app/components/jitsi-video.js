@@ -27,7 +27,7 @@ export function JitsiVideo() {
         whenRendered() {
             const domain = '8x8.vc';
             const options = {
-                roomName: "vpaas-magic-cookie-6fddcef654f54c9eb12e42fe96ba432f/" + this.room,
+                roomName: this.room,
                 jwt: this.jwt,
                 parentNode: this.elementById("meet")
             };
