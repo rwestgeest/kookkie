@@ -1,12 +1,13 @@
+import re
+from dataclasses import dataclass
+from datetime import date, datetime
+from typing import List, Optional, Union
+
 from quiltz.domain.id import ID, IDGenerator
 from quiltz.domain.results import Success, Failure, Result
-from quiltz.domain.validator import validate, presence_of, max_length_of, is_between, conversion_of
+from quiltz.domain.validator import validate, presence_of, is_between
+
 from .clock import Clock
-from .email_addresses import EmailAddress, EmailAddresses
-from datetime import date, datetime
-from typing import List, Dict, Optional, Union
-from dataclasses import dataclass, field
-import re
 
 MAX_NUMBER_OF_PARTICIPANTS = 30
 UNKNOWN_PARTICIPANT = Failure(message='unknown participant')
@@ -45,10 +46,7 @@ class KookkieSessionCreator:
                 id = self.id_generator.generate_id(),
                 date = valid_parameters.date,
                 kook_id=valid_parameters.kook.id,
-                kook_name=valid_parameters.kook.name,
-                participants=[
-                    KookkieParticipant.generate(id_generator=self.id_generator)
-                    for x in range(valid_parameters.participant_count)])))
+                kook_name=valid_parameters.kook.name)))
         )
 
 
@@ -68,7 +66,6 @@ class KookkieSession(object):
     date: date
     kook_id: ID
     kook_name: str
-    participants: List[KookkieParticipant]
     _open: bool
 
 
@@ -76,7 +73,6 @@ class KookkieSession(object):
                  date,
                  kook_id: ID,
                  kook_name: str,
-                 participants: List[KookkieParticipant],
                  name: str = "lekker koken",
                  open=False):
         self.id = id
@@ -84,11 +80,7 @@ class KookkieSession(object):
         self.date = date
         self.kook_id = kook_id
         self.kook_name = kook_name
-        self.participants = participants
         self._open = open
-
-    def _participant_by_id(self, participant_id: ID) -> Optional[KookkieParticipant]:
-        return next((p for p in self.participants if p.id == participant_id), None)
 
     def participant_count(self) -> int:
         return len(self.participants)
@@ -155,40 +147,5 @@ class KookkieSessionCreated(KookkieSessionEvent):
 
 
 @dataclass(frozen=True)
-class KookkieSessionWasOpened(KookkieSessionEvent):
-    pass
-
-
-@dataclass(frozen=True)
-class KookkieSessionWasClosed(KookkieSessionEvent):
-    pass
-
-
-@dataclass(frozen=True)
-class ParticipantWasAdded(KookkieSessionEvent):
-    new_participant: KookkieParticipant
-
-
-@dataclass(frozen=True)
-class ParticipantEmailAddressesWereSet(KookkieSessionEvent):
-    email_addresses: List[EmailAddress]
-
-
-@dataclass(frozen=True)
-class ParticipantEmailAddressesWereReset(KookkieSessionEvent):
-    pass
-
-
-@dataclass(frozen=True)
-class ParticipantsWereInvited(KookkieSessionEvent):
-    invited_participants: List[KookkieParticipant]
-
-
-@dataclass(frozen=True)
 class KookkieSessionWasDeleted(KookkieSessionEvent):
-    pass
-
-
-@dataclass(frozen=True)
-class KookkieSessionWasArchived(KookkieSessionEvent):
     pass

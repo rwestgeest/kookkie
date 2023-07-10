@@ -11,7 +11,7 @@ def aValidKookkieSessionListItem(**kwargs) -> KookkieSessionListItem:
 
 def aValidKookkieSession(**kwargs) -> KookkieSession:
     valid_args = dict(id=aValidID('1'), name='lekker koken', date='2021-01-30', kook_id=aValidID('100'),
-                      kook_name='F. Kook', participants=[])
+                      kook_name='F. Kook')
     return KookkieSession(**{**valid_args, **kwargs})
 
 def aValidJoinInfo(**kwargs) -> JoinInfo:

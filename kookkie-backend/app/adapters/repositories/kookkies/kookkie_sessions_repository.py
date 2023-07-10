@@ -1,31 +1,29 @@
 from datetime import datetime
-
-from quiltz.domain.results import Result
+from functools import reduce
+from typing import Optional, Iterable, List
 
 from quiltz.domain import Success, Failure
+from quiltz.domain.results import Result
+
 from app import db
 from app.domain import (
     ID,
     KookkieSession,
     KookkieSessionsRepository,
-    Kook, KookkieSessionListItem, KookkieSessionEvent, KookkieSessionCreated, KookkieSessionWasOpened,
-    KookkieSessionWasClosed, ParticipantWasAdded, ParticipantsWereInvited, ParticipantEmailAddressesWereSet,
-    ParticipantEmailAddressesWereReset, KookSessionCounts, KookSessionCount, KookkieParticipant,
+    Kook, KookkieSessionListItem, KookkieSessionEvent, KookkieSessionCreated,
+    KookSessionCounts, KookSessionCount, KookkieParticipant,
     KookkieSessionWasDeleted)
 from .kookkie_session_record import (
     KookkieSession as KookkieSessionRecord,
     KookkieParticipant as KookkieParticipantRecord)
-from functools import reduce
-from sqlalchemy.sql.expression import or_
-from typing import Optional, Iterable, List
 
 hard_coded_sessions = [
     KookkieSession(id=ID.from_string('ae5d4c45-3b46-4ad5-b55a-ba25696b9e85'), date="2020-01-11",
                    kook_id=ID.from_string('f894571d-5707-4ea1-86f5-1d421ed37b91'),
-                   kook_name='Rob Westgeest', name='Kikkererwten met koes koes', participants=[]),
+                   kook_name='Rob Westgeest', name='Kikkererwten met koes koes'),
     KookkieSession(id=ID.from_string('590a41e9-ae9c-4ba5-b48f-ceef9d62fa70'), date="2020-03-20",
                    kook_id=ID.from_string('a8487ed5-39b4-48da-bf9a-a536e937a85a'),
-                   kook_name='Anton Brunt', name='Meat party', participants=[])
+                   kook_name='Anton Brunt', name='Meat party')
 ]
 
 KOOKKIE_SESSION_NOT_FOUND = Failure(message='kookkie not found')
@@ -117,18 +115,6 @@ class DBKookkieSessionsRepository(KookkieSessionsRepository):
         for event in events:
             if isinstance(event, KookkieSessionCreated):
                 self._save_created_event(event)
-            if isinstance(event, KookkieSessionWasOpened):
-                self._save_opened_event(event)
-            if isinstance(event, KookkieSessionWasClosed):
-                self._save_closed_event(event)
-            if isinstance(event, ParticipantWasAdded):
-                self._save_participant_was_added(event)
-            if isinstance(event, ParticipantsWereInvited):
-                self._save_participants_were_invited(event)
-            if isinstance(event, ParticipantEmailAddressesWereSet):
-                self._save_participant_email_addresses_were_set(event)
-            if isinstance(event, ParticipantEmailAddressesWereReset):
-                self._save_participant_email_addresses_were_reset(event)
         db.session.commit()
 
     def save(self, event: KookkieSessionEvent):
@@ -143,38 +129,9 @@ class DBKookkieSessionsRepository(KookkieSessionsRepository):
             open=kookkie_session.is_open,
             kook_id=str(kookkie_session.kook_id),
             kook_name=kookkie_session.kook_name,
-            name=kookkie_session.name,
-            participants=[self._to_participant_record(participant) for participant in kookkie_session.participants])
+            name=kookkie_session.name)
         db.session.add(record)
 
-    def _save_opened_event(self, event: KookkieSessionWasOpened):
-        record = self._record_by_id_or_fail(event.id)
-        record.open = True
-
-    def _save_closed_event(self, event: KookkieSessionWasClosed):
-        record = self._record_by_id_or_fail(event.id)
-        record.open = False
-
-    def _save_participant_was_added(self, event: ParticipantWasAdded):
-        record = self._record_by_id_or_fail(event.id)
-        record.participants.append(self._to_participant_record(event.new_participant))
-
-    def _save_participant_email_addresses_were_set(self, event: ParticipantEmailAddressesWereSet):
-        record = self._record_by_id_or_fail(event.id)
-        for participant_record in record.participants:  # type: ignore
-            found = next((a.email for a in event.email_addresses if str(a.participant_id) == participant_record.id), None)
-            if found is not None: participant_record.email = found
-
-    def _save_participant_email_addresses_were_reset(self, event: ParticipantEmailAddressesWereReset):
-        record = self._record_by_id_or_fail(event.id)
-        for participant_record in record.participants:  # type: ignore
-            participant_record.email = ''
-
-    def _save_participants_were_invited(self, event: ParticipantsWereInvited):
-        invited_ids = list(map(lambda p: str(p.id), event.invited_participants))
-        record = self._record_by_id_or_fail(event.id)
-        for participant_record in record.participants:  # type: ignore
-            if participant_record.id in invited_ids: participant_record.invited = True
 
     def _to_participant_record(self, participant: KookkieParticipant) -> KookkieParticipantRecord:
         return KookkieParticipantRecord(
@@ -197,8 +154,7 @@ def as_kookkie_session(record: KookkieSessionRecord) -> KookkieSession:
         date=record.date,
         kook_id=ID.from_string(record.kook_id),
         kook_name=record.kook_name,
-        open=record.open,
-        participants=[as_participant(p) for p in record.participants])  # type: ignore
+        open=record.open)  # type: ignore
 
 
 def as_participant(record: KookkieParticipantRecord) -> KookkieParticipant:

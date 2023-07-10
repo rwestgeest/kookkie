@@ -27,16 +27,8 @@ class TestCreateWithId:
             participant_count='10',
             kook=aValidKook()).kookkie_session_created.kookkie_session
         assert kookkie_session.date == "date"
-        assert kookkie_session.participant_count() == 10
         assert kookkie_session.kook_id == aValidID('100')
         assert kookkie_session.kook_name == 'F. Kook'
-
-    def test_generates_participant_count_participants_with_an_id_and_a_color(self):
-        kookkie_session = self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count=2)).kookkie_session_created.kookkie_session
-        assert kookkie_session.participants == [ 
-            KookkieParticipant.generate(id_generator=self.id_generator),
-            KookkieParticipant.generate(id_generator=self.id_generator)
-            ]
 
     def test_fails_when_date_is_not_present(self):
         assert self.creator.create_with_id(**validKookkieSessionCreationParameters(date=None)) == Failure(message='date is missing')

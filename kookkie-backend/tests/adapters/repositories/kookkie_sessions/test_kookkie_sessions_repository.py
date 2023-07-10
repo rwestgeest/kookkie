@@ -4,9 +4,6 @@ from hamcrest import assert_that, equal_to
 from app.adapters.repositories import InMemoryKookkieSessionsRepository, hard_coded_sessions, \
     KOOKKIE_SESSION_NOT_FOUND, admins
 from domain.builders import *
-from app.domain import (
-    KookkieSessionWasClosed,
-    KookkieSessionWasOpened)
 
 
 class TestInMemoryKookkieSessionsRepository:
@@ -80,10 +77,8 @@ class TestInMemoryKookkieSessionsRepositorySaveDeleted:
         self.repo = InMemoryKookkieSessionsRepository()
 
     def test_kookkie_session_was_deleted_deletes_the_session(self):
-        kookkie_session = aValidKookkieSession(id=aValidID('55'),
-                                                     participants=[aValidKookkieParticipant(id=aValidID('90'))])
-        another_session = aValidKookkieSession(id=aValidID('54'),
-                                                  participants=[aValidKookkieParticipant(id=aValidID('92'))])
+        kookkie_session = aValidKookkieSession(id=aValidID('55'))
+        another_session = aValidKookkieSession(id=aValidID('54'))
         self.repo.save(aValidKookkieSessionCreatedEvent(kookkie_session=kookkie_session))
         self.repo.save(aValidKookkieSessionCreatedEvent(kookkie_session=another_session))
         self.repo.save(KookkieSessionWasDeleted(kookkie_session))
@@ -161,39 +156,6 @@ class TestDbKookkieSessionsRepositorySaveCreated(DbKookkieSessionsRepositoryTest
         self.repo.save(event=kookkie_session_created)
         assert self.repo._by_id(aValidID('1'), None) == kookkie_session_created.kookkie_session
 
-    def test_reads_a_participant_of_a_session_from_the_repo(self):
-        kookkie_session_created = aValidKookkieSessionCreatedEvent(
-            kookkie_session = aValidKookkieSession(participants=[
-                aValidKookkieParticipant(email='participant@qwan.eu')
-            ])
-        )
-        self.repo.save(event=kookkie_session_created)
-        assert_that(self.repo._by_id(kookkie_session_created.id, kook=aValidKook()),
-                    equal_to(kookkie_session_created.kookkie_session))
-
-    def test_reads_more_participant_of_a_session_from_the_repo(self):
-        kookkie_session_created = aValidKookkieSessionCreatedEvent(
-            kookkie_session = aValidKookkieSession(participants=[
-                aValidKookkieParticipant(id=aValidID(5656)),
-                aValidKookkieParticipant(id=aValidID(6767))
-            ])
-        )
-        self.repo.save(event=kookkie_session_created)
-        assert_that(self.repo._by_id(kookkie_session_created.id, kook=aValidKook()),
-                    equal_to(kookkie_session_created.kookkie_session))
-
-    def test_reads_default_participant_values_for_email(self):
-        kookkie_session_created = aValidKookkieSessionCreatedEvent(
-            kookkie_session=aValidKookkieSession(participants=[
-                aValidKookkieParticipant(email=None)
-            ])
-        )
-        self.repo.save(event=kookkie_session_created)
-        assert_that(self.repo._by_id(kookkie_session_created.id, kook=aValidKook()),
-                    equal_to(aValidKookkieSession(participants=[
-                        aValidKookkieParticipant(email='')
-                    ])))
-
 
 class TestDbKookkieSessionsRepository_by_id_with_result(DbKookkieSessionsRepositoryTest):
     __test__ = True
@@ -219,10 +181,8 @@ class TestDbKookkieSessionsRepositorySaveDeleted(DbKookkieSessionsRepositoryTest
 
     @pytest.fixture(autouse=True)
     def setup_db(self):
-        self.kookkie_session = aValidKookkieSession(id=aValidID('55'),
-                                                          participants=[aValidKookkieParticipant(id=aValidID('90'))])
-        self.another_session = aValidKookkieSession(id=aValidID('54'),
-                                                       participants=[aValidKookkieParticipant(id=aValidID('92'))])
+        self.kookkie_session = aValidKookkieSession(id=aValidID('55'))
+        self.another_session = aValidKookkieSession(id=aValidID('54'))
         with self.a_db_with(self.kookkie_session, self.another_session):
             yield
 
@@ -232,82 +192,3 @@ class TestDbKookkieSessionsRepositorySaveDeleted(DbKookkieSessionsRepositoryTest
                     equal_to(Success(kookkie_session=self.another_session)))
 
 
-class TestDbKookkieSessionsRepositorySaveOpenedAndClosed(DbKookkieSessionsRepositoryTest):
-    __test__ = True
-
-    @pytest.fixture(autouse=True)
-    def setup_db(self):
-        self.kookkie_session = aValidKookkieSession(participants=[
-            aValidKookkieParticipant(id=aValidID(5656)),
-            aValidKookkieParticipant(id=aValidID(6767))
-        ])
-        with self.a_db_with(self.kookkie_session):
-            yield
-
-    def test_kookkie_session_was_opened_opens_the_session(self):
-        self.repo.save(event=KookkieSessionWasOpened(self.kookkie_session))
-        assert_that(self.repo._by_id(self.kookkie_session.id, kook=aValidKook()).is_open,
-                    equal_to(True))
-
-    def test_kookkie_session_was_closed_closes_the_session(self):
-        self.repo.save(event=KookkieSessionWasOpened(self.kookkie_session))
-        self.repo.save(event=KookkieSessionWasClosed(self.kookkie_session))
-        assert_that(self.repo._by_id(self.kookkie_session.id, kook=aValidKook()).is_open,
-                    equal_to(False))
-
-
-class TestDbKookkieSessionsRepositorySaveParticipantWasAdded(DbKookkieSessionsRepositoryTest):
-    __test__ = True
-
-    @pytest.fixture(autouse=True)
-    def setup_db(self):
-        self.kookkie_session = aValidKookkieSession()
-        with self.a_db_with(self.kookkie_session):
-            yield
-
-    def test_participant_was_added_adds_new_participant_to_the_session(self):
-        new_participant = KookkieParticipant(id=aValidID('40'), joining_id=aValidID('50'))
-        self.repo.save(event=ParticipantWasAdded(self.kookkie_session,
-                                                 new_participant=new_participant))
-        result = self.repo._by_id(self.kookkie_session.id, kook=aValidKook())
-        assert_that(result.participant_count(), equal_to(1))
-        assert_that(result.participants[0], equal_to(new_participant)) 
-
-
-class TestDbKookkieSessionsRepositorySaveParticipantEmailAddressesWereReset(DbKookkieSessionsRepositoryTest):
-    __test__ = True
-
-    @pytest.fixture(autouse=True)
-    def setup_db(self):
-        self.kookkie_session = aValidKookkieSession(participants=[aValidKookkieParticipant(id=aValidID('40'), email='john@mail.com'),
-                                                                        aValidKookkieParticipant(id=aValidID('41'), email='dirk@mail.com')])
-        with self.a_db_with(self.kookkie_session):
-            yield
-
-    def test_saves_participant_email_addresses(self):
-        self.repo.save(ParticipantEmailAddressesWereReset(kookkie_session=self.kookkie_session))
-        result = self.repo._by_id(self.kookkie_session.id, kook=aValidKook())
-        assert_that(result._participant_by_id(aValidID('40')).email, equal_to(''))
-        assert_that(result._participant_by_id(aValidID('41')).email, equal_to(''))
-
-
-class TestDbKookkieSessionsRepositorySaveParticipantEmailAddressesWereSet(DbKookkieSessionsRepositoryTest):
-    __test__ = True
-
-    @pytest.fixture(autouse=True)
-    def setup_db(self):
-        self.kookkie_session = aValidKookkieSession(participants=[aValidKookkieParticipant(id=aValidID('40'), email=''),
-                                                                        aValidKookkieParticipant(id=aValidID('41'), email='dirk@mail.com')])
-        with self.a_db_with(self.kookkie_session):
-            yield
-
-    def test_saves_participant_email_addresses(self):
-        self.repo.save(ParticipantEmailAddressesWereSet(kookkie_session=self.kookkie_session, email_addresses=[EmailAddress(participant_id=aValidID('40'), email='john@mail.com')]))
-        result = self.repo._by_id(self.kookkie_session.id, kook=aValidKook())
-        assert_that(result._participant_by_id(aValidID('40')).email, equal_to('john@mail.com'))
-        assert_that(result._participant_by_id(aValidID('41')).email, equal_to('dirk@mail.com'))
-
-    def test_saves_empty_participant_email_addresses(self):
-        self.repo.save(ParticipantEmailAddressesWereSet(kookkie_session=self.kookkie_session, email_addresses=[EmailAddress(participant_id=aValidID('41'), email='')]))
-        result = self.repo._by_id(self.kookkie_session.id, kook=aValidKook())
-        assert_that(result._participant_by_id(aValidID('41')).email, equal_to(''))

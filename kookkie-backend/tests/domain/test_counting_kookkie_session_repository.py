@@ -3,7 +3,7 @@ from quiltz.domain.id.testbuilders import aValidID
 
 from app.adapters.metrics import NoMetricsCollector
 from testing import *
-from app.domain import KookkieSessionWasOpened, CountingKookkieSessionRepository, Clock
+from app.domain import CountingKookkieSessionRepository, Clock
 from domain.builders import aValidKookkieSession, aValidKook, aValidKookkieSessionCreatedEvent
 
 
@@ -56,13 +56,3 @@ class TestCountingKookkieSessionRepository_Save:
     def test_collects_the_created_event(self):
         self.repo.save(event=aValidKookkieSessionCreatedEvent())
         self.metrics_collector.collect_event.assert_called_once_with("KookkieSessionCreated")
-
-    def test_collects_other_events(self):
-        self.repo.save(event=KookkieSessionWasOpened(aValidKookkieSession()))
-        self.metrics_collector.collect_event.assert_called_once_with("KookkieSessionWasOpened")
-
-    def test_collects_all_events(self):
-        self.repo.save_all(events=[aValidKookkieSessionCreatedEvent(),
-                                   KookkieSessionWasOpened(aValidKookkieSession())])
-        self.metrics_collector.collect_event.assert_any_call("KookkieSessionCreated")
-        self.metrics_collector.collect_event.assert_any_call("KookkieSessionWasOpened")

@@ -1,6 +1,6 @@
 from app import create_app, db
 from app.adapters.repositories import DBKookkieSessionsRepository
-from domain.builders import aValidKookkieSessionCreatedEvent
+from domain.builders import aValidKookkieSessionCreatedEvent, aValidKook
 
 
 class DbKookkieSessionsRepositoryTest:
@@ -19,3 +19,5 @@ class DbKookkieSessionsRepositoryTest:
             for session in kookkie_sessions:
                 self.repo.save(aValidKookkieSessionCreatedEvent(kookkie_session=session))
         return the_app.app_context()
+
+

@@ -1,19 +1,11 @@
-import logging
-from typing import Optional
 from quiltz.domain import ID
 from quiltz.domain.id import IDGenerator
-from quiltz.domain.results import Result
 
 from app.domain import (
     KookkieSessionCreator,
     Clock,
     Success,
-    Failure,
-    KookkieSessionWasOpened,
-    KookkieSessionWasClosed,
-    Kook, KookkieSessionsRepository)
-from app.domain.email_addresses import EmailAddresses
-from app.domain.repositories import KookRepository
+    Failure, KookkieSessionsRepository)
 from app.utils.jaas_jwt_builder import JaaSJwtBuilder
 
 
@@ -40,7 +32,7 @@ class StartKookkieSession:
         self.kookkie_session_repository = kookkie_session_repository
 
     def __call__(self, kookkie_id, kook):
-        return self.kookkie_session_repository.by_id_with_result(kookkie_id)\
+        return self.kookkie_session_repository.by_id_with_result(kookkie_id) \
             .map(lambda result: result.kookkie_session.start(kook, self.jaas_jwt_builder))
 
 

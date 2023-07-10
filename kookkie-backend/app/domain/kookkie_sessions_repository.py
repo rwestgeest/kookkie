@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
-from typing import Optional, Iterable, List
+from typing import Optional, List
+
 from quiltz.domain import ID
 from quiltz.domain.results import Result
 
-from app.domain import KookkieSessionEvent, KookkieSessionListItem
 from app.domain import Kook
+from app.domain import KookkieSessionEvent, KookkieSessionListItem
 
 
 class KookkieSessionsRepository(ABC):
