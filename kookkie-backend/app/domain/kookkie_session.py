@@ -113,6 +113,9 @@ class KookkieSession(object):
             return Failure(message="This is not your kookkie")
         return Success(started_kookkie=jwt_builder.join_info_for_kook(kook, self))
 
+    def join(self, guest, jwt_builder) -> Result:
+        return Success(started_kookkie=jwt_builder.join_info_for_guest(guest, self))
+
     def open(self) -> 'KookkieSession':
         self._open = True
         return self

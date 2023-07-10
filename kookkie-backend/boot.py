@@ -53,7 +53,7 @@ def main(config=Config,
         jaas_jwt_builder=jaas_jwt_builder
     ).register(application)
 
-    ParticipantRoutes.with_kookkie_sessions_repository(counting_kookkie_session_repository).register(application)
+    ParticipantRoutes.with_kookkie_sessions_repository(counting_kookkie_session_repository, jaas_jwt_builder).register(application)
 
     AuthenticationRoutes.create(
         kook_repository,

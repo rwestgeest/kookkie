@@ -97,6 +97,15 @@ class TestStart:
         result = self.kookkie_session.start(kook, self.jwt_builder)
         assert_that(result, equal_to(Failure(message="This is not your kookkie")))
 
+
+class TestJoin:
+    def test_creates_a_started_kookkie_session_for_the_guest(self):
+        jwt_builder = FakeJaasJwtBuilder()
+        kookkie_session = aValidKookkieSession()
+        result = kookkie_session.join("harry", jwt_builder)
+        assert_that(result, equal_to(Success(started_kookkie=jwt_builder.join_info_for_guest("harry", kookkie_session))))
+
+
 class TestRoomName:
     def test_is_camelized_description(self):
         kookkie = aValidKookkieSession(name="lekker eten")

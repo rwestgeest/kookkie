@@ -45,9 +45,11 @@ class StartKookkieSession:
 
 
 class JoinSession:
-    def __init__(self, kookkie_session_repository: KookkieSessionsRepository):
+    def __init__(self, kookkie_session_repository: KookkieSessionsRepository, jaas_jwt_builder: JaaSJwtBuilder):
+        self.jaas_jwt_builder = jaas_jwt_builder
         self.kookkie_session_repository = kookkie_session_repository
 
-    def __call__(self, kookkie_session_id: ID):
-        return self.kookkie_session_repository.by_id_with_result(kookkie_session_id, kook=None)
+    def __call__(self, kookkie_session_id: ID, name=""):
+        return self.kookkie_session_repository.by_id_with_result(kookkie_session_id, kook=None) \
+            .map(lambda result: result.kookkie_session.join(name, self.jaas_jwt_builder))
 

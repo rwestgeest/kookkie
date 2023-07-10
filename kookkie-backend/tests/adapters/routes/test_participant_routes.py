@@ -1,7 +1,7 @@
 from app.adapters.routes import *
 from app.utils.json_converters import json_loads
 from quiltz.domain.id.testbuilders import aValidID
-from domain.builders import aValidKookkieSession
+from domain.builders import aValidKookkieSession, aValidJoinInfo
 from testing import *
 from .routes_tests import RoutesTests, get_csrf_token
 
@@ -10,7 +10,8 @@ class TestParticipantRoutes_Joining(RoutesTests):
     @pytest.fixture(autouse=True)
     def setup(self):
         self.setup_app()
-        self.join_session.return_value = Success(kookkie_session=aValidKookkieSession())
+        self.returned_join_info = aValidJoinInfo()
+        self.join_session.return_value = Success(started_kookkie=self.returned_join_info)
         
     def create_routes(self):
         self.join_session = Mock()
@@ -20,28 +21,22 @@ class TestParticipantRoutes_Joining(RoutesTests):
         self.client.post('/api/kookkie-sessions/{}/join'.format(str(aValidID(11))))
         self.join_session.assert_called_with(aValidID(11))
 
-    def test_returns_kookkie_when_joining(self):
+    def test_returns_joining_info_when_joining(self):
         response = self.client.post('/api/kookkie-sessions/{}/join'.format(str(aValidID(11))))
         assert response.status == '201 CREATED'
-        assert json_loads(response.data) == as_joining_info(aValidKookkieSession())
+        assert json_loads(response.data) == as_started_kookkie(self.returned_join_info)
 
     def test_responds_with_error_joining_fails(self):
         self.join_session.return_value = Failure(message='unknown kookkie session')
         response = self.client.post('/api/kookkie-sessions/{}/join/{}'.format(str(aValidID(11)), str(aValidID(22))))
         assert response.status == '404 NOT FOUND'
 
-class TestMappingJoiningInfo:
-    def test_maps_kookkie_session_attributes_to_dict(self):
-        assert_that(as_joining_info(aValidKookkieSession(id=aValidID('1'), date='2021-01-30',
-                      kook_name='F. Kook')), equal_to(dict(id=str(aValidID('1')), date='2021-01-30',
-                      kook_name='F. Kook')))
-
 
 class TestParticipantRoutes_Joining_CSRF(RoutesTests):
     @pytest.fixture(autouse=True)
     def setup(self):
         self.setup_app(check_csrf=True)
-        self.join_session.return_value = Success(kookkie_session=aValidKookkieSession())
+        self.join_session.return_value = Success(started_kookkie=aValidJoinInfo())
         
     def create_routes(self):
         self.join_session = Mock()

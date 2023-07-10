@@ -86,7 +86,7 @@ class TestKookkieSessionRoutes_Start(RoutesTests):
 
 
 class TestMapStartedKookkie:
-    def test_contains_the_kookkie(self):
+    def test_contains_the_kookkie_jwt_and_room_name(self):
         kookkie_session = aValidKookkieSession()
         result = as_started_kookkie(aValidJoinInfo(kookkie=kookkie_session, jwt=b'jwt', room_name="some_room"))
         assert_that(result, equal_to(dict(jwt='jwt', room_name='some_room', kookkie=as_kookkie_session(kookkie_session))))

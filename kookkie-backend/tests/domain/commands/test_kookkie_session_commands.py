@@ -65,14 +65,16 @@ class TestJoinSession:
     @pytest.fixture(autouse=True)
     def setup(self):
         self.repository = Mock(KookkieSessionsRepository)
-        self.join_session = JoinSession(self.repository)
+        self.jwt_builder = FakeJaasJwtBuilder()
+        self.join_session = JoinSession(self.repository, self.jwt_builder)
 
     def test_responds_with_error_when_session_not_found(self):
         self.repository.by_id_with_result.return_value = Failure(message='kookkie session not found')
         assert self.join_session(aValidID(11)) == Failure(message='kookkie session not found')
     
-    def test_joins_to_found_session(self):
-        kookkie_session = aValidKookkieSession(id=aValidID('11'), participants=[])
+    def test_creates_joining_info_with_kookkie_and_jwt(self):
+        kookkie_session = aValidKookkieSession()
         self.repository.by_id_with_result.return_value = Success(kookkie_session=kookkie_session)
-        assert self.join_session(aValidID(11)) == Success(kookkie_session=kookkie_session)
+        result = self.join_session(kookkie_session_id=aValidID("12"), name="harry")
+        assert_that(result, equal_to(kookkie_session.join("harry", self.jwt_builder)))
 

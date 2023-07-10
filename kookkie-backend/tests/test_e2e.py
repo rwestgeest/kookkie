@@ -154,7 +154,10 @@ class TestE2EParticipants:
         kookkie_session = self.save_kookkie_session(KookkieSessionCreator().create_with_id(**validKookkieSessionCreationParameters()).kookkie_session_created)
         response = self.participant_client.post('/api/kookkie-sessions/{id}/join'.format(id = kookkie_session.id))
         assert_created(response)
-        assert json.loads(response.data)['kook_name'] == kookkie_session.kook_name
+        body = json.loads(response.data)
+        assert_that(body['kookkie'], equal_to(as_kookkie_session(kookkie_session)))
+        assert_that(body['room_name'], equal_to(f"{TestConfig.JITSI_APP_ID}/{kookkie_session.room_name}"))
+`
 
     def save_kookkie_session(self, session_created):
         self.kookkie_session_repo.save(session_created)
