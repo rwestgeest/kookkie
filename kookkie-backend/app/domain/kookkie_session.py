@@ -81,9 +81,6 @@ class KookkieSession(object):
         self.kook_name = kook_name
         self._open = open
 
-    def participant_count(self) -> int:
-        return len(self.participants)
-
     def as_list_item(self) -> KookkieSessionListItem:
         return KookkieSessionListItem(
             id=self.id,
