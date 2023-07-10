@@ -3,26 +3,18 @@ import {Kookkie} from "../domain/kookkie.js";
 export class ParticipantModule {
     constructor(kookkiesJoiner) {
         this._kookkiesJoiner = kookkiesJoiner;
-        this._kookkie = undefined;
+        this._started_kookie = undefined;
     }
 
-    set kookkie(value) {
-        this._kookkie = value;
+    set started_kookie(value) {
+        this._started_kookie = value;
     }
 
-    get kookkie() {
-        return this._kookkie;
+    get started_kookie() {
+        return this._started_kookie;
     }
 
     async join(id) {
-        this._kookkie = await Promise.resolve(new Kookkie({
-            id: "121123-123123-123123-123123",
-            data: "2023-06-07",
-            name: "Lekker eten met anton",
-            kook_name: "anton"
-        }));
-        // this._kookkiesJoiner.join().then(kookkie => {
-        //     this.kookkie = kookkie;
-        // });
+        this._started_kookie = await this._kookkiesJoiner.join(id);
     }
 }

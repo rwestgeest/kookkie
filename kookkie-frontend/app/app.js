@@ -12,6 +12,7 @@ import {SessionJoinPage} from "./pages/session-join-page.js";
 import {KookkiesModule} from "./modules/kookkies-module.js";
 import {ParticipantModule} from "./modules/participant-module.js";
 import {JitsiVideo} from "./components/jitsi-video.js";
+import {ApiBasedKookkieJoiner} from "./adapters/api-based-kookkie-joiner.js";
 
 const router = new Router(window)
 const http = new FetchBasedHTTP();
@@ -23,7 +24,7 @@ SignInPage(authenticationModule);
 SessionsPage(kookkiesModule, userProfileModule);
 JitsiVideo();
 const sessionPage = new SessionPage(kookkiesModule, userProfileModule);
-const sessionJoinPage = new SessionJoinPage(new ParticipantModule());
+const sessionJoinPage = new SessionJoinPage(new ParticipantModule(new ApiBasedKookkieJoiner(http)));
 
 router.withNotFound(new PageThatRenders("not found"))
     .addRoute('#/', new PageThatRenders('root-content'))

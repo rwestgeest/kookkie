@@ -157,7 +157,7 @@ class TestE2EParticipants:
         body = json.loads(response.data)
         assert_that(body['kookkie'], equal_to(as_kookkie_session(kookkie_session)))
         assert_that(body['room_name'], equal_to(f"{TestConfig.JITSI_APP_ID}/{kookkie_session.room_name}"))
-`
+
 
     def save_kookkie_session(self, session_created):
         self.kookkie_session_repo.save(session_created)

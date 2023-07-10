@@ -4,25 +4,25 @@ export class SessionJoinPage {
     }
 
     get kookkie() {
-        return this.participantModule.kookkie;
+        return this.participantModule.started_kookie;
     }
 
     async render({id}) {
-        await this.participantModule.join(id);
-
+        await this.participantModule.join(id)
         document.querySelector("#router-view").innerHTML = `
             <style>
                 .kookkie-name {padding-right: 2em;}
                 li {}
             </style>
             <div id="participant-session-details" style="visibility: hidden">
-                <h1>Welcome as participant to</h1>
-                <p><span class="kookkie-name">${this.kookkie.name}</span>
+                <h1>Joining as participant </h1>
+                <p><span class="kookkie-name">${this.kookkie.name}</span> by 
                 <span class="kook-name">${this.kookkie.kook_name}</span> </p>
-                
-                <div id="meet" style="height:700px; width:100%; border: 1px solid black">
+                <div id="videowindow">
+                    <jitsi-video jwt="${this.kookkie.jwt}" room="${this.kookkie.room_name}"></jitsi-video>
+                </div>
             </div>
-            <div id="error" style="visibility: hidden">
+            <div id="error" hidden="true">
                 <p>uh oh</p>
             </div>
             `

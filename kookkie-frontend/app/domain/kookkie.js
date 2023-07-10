@@ -17,4 +17,10 @@ export class StartedKookkie {
         this.room_name = room_name
         this.kookkie = new Kookkie(kookkie)
     }
+    get name() {
+        return this.kookkie.name
+    }
+    get kook_name() {
+        return this.kookkie.kook_name
+    }
 }
