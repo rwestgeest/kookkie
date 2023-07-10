@@ -3,7 +3,8 @@ from quiltz.messaging.engine.smtp import SMTPBasedMessageEngine
 
 from app import create_app
 from app.adapters.metrics import MetricsCollectorCreator
-from app.adapters.repositories import AWSBasedSecrets, LocalSecrets, InMemoryKookkieSessionsRepository
+from app.adapters.repositories import AWSBasedSecrets, LocalSecrets, InMemoryKookkieSessionsRepository, \
+    DBKookRepository, DBKookkieSessionsRepository
 from app.adapters.routes import (
     KookkieSessionRoutes,
     ParticipantRoutes,
@@ -13,7 +14,6 @@ from app.adapters.routes import (
     FlaskLoginBasedCurrentUserRepository,
     VersionRoutes)
 from app.domain import MessengerFactory, CountingKookkieSessionRepository
-from app.domain.repositories import InMemoryKookRepository
 from app.utils.jaas_jwt_builder import JaaSJwtBuilder
 from config import Config
 
@@ -25,8 +25,8 @@ def secrets_from_config(config):
 
 
 def main(config=Config,
-         kookkie_session_repository=InMemoryKookkieSessionsRepository.with_hard_coded_values(),
-         kook_repository=InMemoryKookRepository([]).with_admins(),
+         kookkie_session_repository=DBKookkieSessionsRepository(),
+         kook_repository=DBKookRepository(),
          metricsCollectorCreator=MetricsCollectorCreator.forProd()):
 
     application = create_app(config)
@@ -34,6 +34,7 @@ def main(config=Config,
     with application.app_context():
         upgrade()
         kook_repository = kook_repository.with_admins()
+        kookkie_session_repository = kookkie_session_repository.commit_hard_coded_values()
 
     message_engine = SMTPBasedMessageEngine.from_config(config)
     messenger_factory = MessengerFactory.from_config(config)

@@ -33,6 +33,9 @@ class InMemoryKookkieSessionsRepository(KookkieSessionsRepository):
     def with_hard_coded_values(cls):
         return InMemoryKookkieSessionsRepository(hard_coded_sessions)
 
+    def commit_hard_coded_values(self):
+        return self
+
     def __init__(self, kookkie_sessions=list()):
         self.kookkie_sessions = { c.id : c for c in kookkie_sessions }
 
@@ -70,6 +73,14 @@ class InMemoryKookkieSessionsRepository(KookkieSessionsRepository):
 
 
 class DBKookkieSessionsRepository(KookkieSessionsRepository):
+
+    def commit_hard_coded_values(self):
+        for session in hard_coded_sessions:
+            if not self._by_id(session.id):
+                self.save(KookkieSessionCreated(session, datetime.now()))
+        return self
+
+
     def all(self, kook: Kook) -> List[KookkieSessionListItem]:
         kook_id = str(kook.id)
         return sorted([as_kookkie_session_list_item(record) for record in KookkieSessionRecord.query.filter(

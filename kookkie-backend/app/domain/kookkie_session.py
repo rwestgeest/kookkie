@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 from datetime import date, datetime
-from typing import List, Optional, Union
+from typing import Union
 
 from quiltz.domain.id import ID, IDGenerator
 from quiltz.domain.results import Success, Failure, Result
