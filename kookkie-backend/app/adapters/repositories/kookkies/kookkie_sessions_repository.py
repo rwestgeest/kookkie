@@ -14,8 +14,7 @@ from app.domain import (
     KookSessionCounts, KookSessionCount, KookkieParticipant,
     KookkieSessionWasDeleted)
 from .kookkie_session_record import (
-    KookkieSession as KookkieSessionRecord,
-    KookkieParticipant as KookkieParticipantRecord)
+    KookkieSession as KookkieSessionRecord)
 
 hard_coded_sessions = [
     KookkieSession(id=ID.from_string('ae5d4c45-3b46-4ad5-b55a-ba25696b9e85'), date="2020-01-11",
@@ -133,12 +132,6 @@ class DBKookkieSessionsRepository(KookkieSessionsRepository):
         db.session.add(record)
 
 
-    def _to_participant_record(self, participant: KookkieParticipant) -> KookkieParticipantRecord:
-        return KookkieParticipantRecord(
-            id=str(participant.id),
-            joining_id=str(participant.joining_id),
-            email=participant.email)
-
 
 def as_kookkie_session_list_item(record: KookkieSessionRecord) -> KookkieSessionListItem:
     return KookkieSessionListItem(
@@ -155,14 +148,6 @@ def as_kookkie_session(record: KookkieSessionRecord) -> KookkieSession:
         kook_id=ID.from_string(record.kook_id),
         kook_name=record.kook_name,
         open=record.open)  # type: ignore
-
-
-def as_participant(record: KookkieParticipantRecord) -> KookkieParticipant:
-    return KookkieParticipant(
-        id=ID.from_string(record.id),
-        joining_id=ID.from_string(record.joining_id),
-        email=record.email and record.email or '')
-
 
 
 def potential_none_id(id_str: str) -> Optional[ID]:

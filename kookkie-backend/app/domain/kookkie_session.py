@@ -10,7 +10,6 @@ from quiltz.domain.validator import validate, presence_of, is_between
 from .clock import Clock
 
 MAX_NUMBER_OF_PARTICIPANTS = 30
-UNKNOWN_PARTICIPANT = Failure(message='unknown participant')
 
 
 @dataclass(init=False)
