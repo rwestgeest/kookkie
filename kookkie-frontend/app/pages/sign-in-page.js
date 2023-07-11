@@ -1,7 +1,8 @@
 import { Component } from '../components/component.js'
 
 export function SignInPage(authenticationModule) {
-    return Component.define('sign-in-page', class extends Component {
+    return class extends Component {
+        static tag_name = 'sign-in-page';
         constructor() {
             super();
             this._authenticationModule = authenticationModule;
@@ -31,7 +32,7 @@ export function SignInPage(authenticationModule) {
         }
 
         whenRendered() {
-            this._shadowRoot.getElementById('sign-in-button').addEventListener('click', e => this.login());
+            this.elementById('sign-in-button').addEventListener('click', e => this.login());
         }
 
         login() {
@@ -40,5 +41,5 @@ export function SignInPage(authenticationModule) {
             this._authenticationModule.signIn(username, password);
         }
 
-    });
+    };
 }

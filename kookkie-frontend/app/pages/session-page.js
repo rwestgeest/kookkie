@@ -1,6 +1,8 @@
+import {Page} from "./page.js";
 
-export class SessionPage {
+export class SessionPage extends Page {
     constructor(kookkiesModule, userProfileModule) {
+        super();
         this.userProfileModule = userProfileModule;
         this.kookkiesModule = kookkiesModule;
     }

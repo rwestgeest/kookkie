@@ -1,4 +1,9 @@
 
+export function defineComponent(componentClass) {
+    customElements.define(componentClass.tag_name, componentClass);
+    return componentClass;
+}
+
 export class Component extends HTMLElement {
     static define(tag, componentClass) {
         customElements.define(tag, componentClass);
@@ -6,17 +11,24 @@ export class Component extends HTMLElement {
 
     constructor() {
         super();
-        this._shadowRoot = this.attachShadow({ mode: "closed" });
+        this._root = this.createShadowRoot();
     }
+
+    createShadowRoot() {
+        return this.attachShadow({mode: "closed"});
+    }
+
+    get root() {
+        return this._root;
+    }
+
     elementById(id) {
-        return this._shadowRoot.getElementById(id);
+        return this.root.getElementById(id);
     }
 
     render(params) {
-        window.requestAnimationFrame(() => {
-            this._shadowRoot.innerHTML = this.html(params);
-            this.whenRendered();
-        });
+        this.root.innerHTML = this.html(params);
+        this.whenRendered();
     }
 
     attributeChangedCallback(property, oldValue, newValue) {

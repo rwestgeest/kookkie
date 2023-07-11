@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import {FetchBasedHTTP} from "../../app/adapters/fetch-based-http";
 
 describe(FetchBasedHTTP, () => {

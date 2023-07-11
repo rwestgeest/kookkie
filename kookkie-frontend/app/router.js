@@ -1,3 +1,4 @@
+import {Page} from "./pages/page.js";
 
 class Route {
     constructor(path, page) {
@@ -10,7 +11,7 @@ class Route {
         this._pathExp = new RegExp(`^${pathExp}$`);
     }
     renderPage(path) {
-        this._page.render(this.paramsFor(path));
+        this._page.open(this.paramsFor(path));
     }
 
     paramsFor(path) {
@@ -73,8 +74,9 @@ export class Router {
 
 }
 
-export class PageThatRenders {
+export class PageThatRenders extends Page {
     constructor(contentToRender) {
+        super();
         this.contentToRender = contentToRender;
     }
     render() {

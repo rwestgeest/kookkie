@@ -1,10 +1,13 @@
+/**
+ * @jest-environment jsdom
+ */
 import {PageThatRenders, Router} from "../app/router";
 import expect from "expect";
 import {ObservableModel} from "../app/domain/observable-model";
 
 class PageThatRendersWithParams extends PageThatRenders{
     constructor(barContent) {
-        super(barContent)
+        super(barContent);
     }
     render(params) {
         super.render();

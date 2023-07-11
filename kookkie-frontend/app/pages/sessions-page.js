@@ -1,17 +1,22 @@
-import {Component} from '../components/component.js';
+import {Page} from "./page.js";
 
-export function SessionsPage(kookkiesModule, userProfileModule) {
-    return Component.define('sessions-page', class extends Component {
-        constructor() {
-            super();
-            this.userProfileModule = userProfileModule;
-            this.kookkiesModule = kookkiesModule;
-            this.kookkies = [];
-        }
+export class SessionsPage extends Page {
+    constructor(kookkiesModule, userProfileModule) {
+        super();
+        this.userProfileModule = userProfileModule;
+        this.kookkiesModule = kookkiesModule;
+        this.kookkies = [];
+        this.kookkiesModule.registerView(this);
+    }
 
-        html() {
-            let profile = this.userProfileModule.userProfile
-            return `
+    open() {
+        super.open();
+        this.kookkiesModule.obtainKookkies();
+    }
+
+    render() {
+        let profile = this.userProfileModule.userProfile
+        document.querySelector('#router-view').innerHTML = `
                 <style>
                     .kookkie-name {padding-right: 2em;}
                     li {}
@@ -20,21 +25,16 @@ export function SessionsPage(kookkiesModule, userProfileModule) {
                 <h1>Sessions</h1>
                 <ul id="kookkies-listt">
                      ${this.kookkies.map(k => {
-                        return `<li id="${k.id}"><a href="#/session/${k.id}"><span class="kookkie-name">${k.name}</span>
+            return `<li id="${k.id}"><a href="#/session/${k.id}"><span class="kookkie-name">${k.name}</span>
                                 <span class="kook-name">${k.kook_name}</span></a></li>`
-                    }).join('\n')}
+        }).join('\n')}
                 </ul>
                 `
-        }
+    }
 
-        update() {
-            this.kookkies = this.kookkiesModule.kookkies;
-            this.render();
-        }
+    update() {
+        this.kookkies = this.kookkiesModule.kookkies;
+        this.render();
+    }
 
-        onInit() {
-            this.kookkiesModule.registerView(this);
-            this.kookkiesModule.obtainKookkies();
-        }
-    });
 }

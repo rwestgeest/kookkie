@@ -13,6 +13,7 @@ import {KookkiesModule} from "./modules/kookkies-module.js";
 import {ParticipantModule} from "./modules/participant-module.js";
 import {JitsiVideo} from "./components/jitsi-video.js";
 import {ApiBasedKookkieJoiner} from "./adapters/api-based-kookkie-joiner.js";
+import {defineComponent} from "./components/component.js";
 
 const router = new Router(window)
 const http = new FetchBasedHTTP();
@@ -20,15 +21,15 @@ const userProfileModule = new UserProfileModule(new ApiBasedUserProfileRepositor
 const authenticationModule = new AuthenticationModule(userProfileModule, new ApiBasedAuthenticator(http));
 
 const kookkiesModule = new KookkiesModule(new ApiBasedKookkiesRepository(http));
-SignInPage(authenticationModule);
-SessionsPage(kookkiesModule, userProfileModule);
-JitsiVideo();
+defineComponent(SignInPage(authenticationModule));
+defineComponent(JitsiVideo());
+const sessionsPage = new SessionsPage(kookkiesModule, userProfileModule);
 const sessionPage = new SessionPage(kookkiesModule, userProfileModule);
 const sessionJoinPage = new SessionJoinPage(new ParticipantModule(new ApiBasedKookkieJoiner(http)));
 
 router.withNotFound(new PageThatRenders("not found"))
     .addRoute('#/', new PageThatRenders('root-content'))
-    .addRoute('#/sessions', new PageThatRenders('<sessions-page></sessions-page>'))
+    .addRoute('#/sessions', sessionsPage)
     .addRoute('#/session/:id', sessionPage)
     .addRoute('#/join/:id', sessionJoinPage)
     .addRoute('#/signin', new PageThatRenders('<sign-in-page></sign-in-page>'))

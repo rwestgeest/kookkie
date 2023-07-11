@@ -1,7 +1,9 @@
 import {Component} from "./component.js";
 
 export function JitsiVideo() {
-    return Component.define('jitsi-video', class extends Component {
+    return class extends Component {
+        static tag_name= "jitsi-video";
+
         static get observedAttributes() { return ['jwt', 'room']; }
         set jwt(value) {
             this._jwt = value;
@@ -33,7 +35,7 @@ export function JitsiVideo() {
             };
             const api= new JitsiMeetExternalAPI(domain, options);
         }
-    });
+    };
 }
 
 1

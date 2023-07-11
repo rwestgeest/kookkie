@@ -1,5 +1,8 @@
-export class SessionJoinPage {
+import {Page} from "./page.js";
+
+export class SessionJoinPage extends Page {
     constructor(participantModule) {
+        super();
         this.participantModule = participantModule;
     }
 
