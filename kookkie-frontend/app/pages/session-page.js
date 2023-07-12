@@ -13,7 +13,7 @@ export class SessionPage extends Page {
         this.profile = this.userProfileModule.userProfile;
         this.kookkie = this.kookkiesModule.byId(id);
         super.open({id});
-        elementById("open-meeting-button").addEventListener('click', e => {
+        elementById("open-meeting-button").addEventListener('click', () => {
             this.startSession(id);
         });
     }
