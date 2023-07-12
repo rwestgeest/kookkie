@@ -33,7 +33,7 @@ export function JitsiVideo() {
                 jwt: this.jwt,
                 parentNode: this.elementById("meet")
             };
-            const api= new JitsiMeetExternalAPI(domain, options);
+            new JitsiMeetExternalAPI(domain, options);
         }
     };
 }

@@ -1,4 +1,6 @@
-import {Page} from "./page.js";
+import {elementById, hide, show, Page} from "./page.js";
+
+
 
 export class SessionPage extends Page {
     constructor(kookkiesModule, userProfileModule) {
@@ -7,31 +9,39 @@ export class SessionPage extends Page {
         this.kookkiesModule = kookkiesModule;
     }
 
+    open({id}) {
+        this.profile = this.userProfileModule.userProfile;
+        this.kookkie = this.kookkiesModule.byId(id);
+        super.open({id});
+        elementById("open-meeting-button").addEventListener('click', e => {
+            this.startSession(id);
+        });
+    }
+
     render({id}) {
-        let profile = this.userProfileModule.userProfile;
-        let kookkie = this.kookkiesModule.byId(id);
-        document.querySelector("#router-view").innerHTML = `
+        this.renderInPageView(`
             <style>
                 .kookkie-name {padding-right: 2em;}
                 li {}
             </style>
-            <p class="profile-header"> ${profile.name} </p>
+            <p class="profile-header"> ${this.profile.name} </p>
             <h1>Kookkie</h1>
-            <p><span class="kookkie-name">${kookkie.name}</span>
-            <span class="kook-name">${kookkie.kook_name}</span> </p>
-            <p><a href="#/join/${kookkie.id}">${window.location.origin}/#/join/${kookkie.id}</a></p>
+            <p><span class="kookkie-name">${this.kookkie.name}</span>
+            <span class="kook-name">${this.kookkie.kook_name}</span> </p>
+            <p>Share this link to invite: <a href="#/join/${this.kookkie.id}">${window.location.origin}/#/join/${this.kookkie.id}</a></p>
             <div id="videowindow">
                  <button id="open-meeting-button">open</button>
                  <p id="open-meeting-throbber" hidden="true">opening</p>
             </div>
-            `
-        document.querySelector("#open-meeting-button").addEventListener('click', e => {
-            document.getElementById("open-meeting-button").hidden = true;
-            document.getElementById("open-meeting-throbber").hidden = false;
-            const startedKookkie = this.kookkiesModule.start(id).then(startedKookkie => {
-                document.getElementById("videowindow").innerHTML=`<jitsi-video jwt="${startedKookkie.jwt}" room="${startedKookkie.room_name}"></jitsi-video>`
-            });
-        });
+            `);
+
     }
 
+    startSession(id) {
+        hide("open-meeting-button");
+        show("open-meeting-throbber");
+        this.kookkiesModule.start(id).then(startedKookkie => {
+            elementById("videowindow").innerHTML = `<jitsi-video jwt="${startedKookkie.jwt}" room="${startedKookkie.room_name}"></jitsi-video>`
+        });
+    }
 }

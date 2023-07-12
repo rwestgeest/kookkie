@@ -22,7 +22,7 @@ describe(FetchBasedHTTP, () => {
         });
 
         it('calls the fetch api', async () => {
-            const response = await http.get('/api/foo');
+            await http.get('/api/foo');
             expect(global.fetch).toHaveBeenCalledWith('/api/foo', {
                 headers: {
                     "Content-Type": "application/json",
