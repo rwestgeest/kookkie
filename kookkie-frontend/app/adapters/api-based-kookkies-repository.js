@@ -15,4 +15,10 @@ export class ApiBasedKookkiesRepository {
             .then((response) => new StartedKookkie(response.data))
             .catch(e => Promise.reject({message: "unable to start kookkie session"}));
     }
+
+    async create(args) {
+        return this._http.post('/api/kookkie-sessions', args)
+            .then((response) => { return {};})
+            .catch(e => Promise.reject({message: "unable to create kookkie session"}));
+    }
 }

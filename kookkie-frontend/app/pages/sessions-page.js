@@ -17,13 +17,14 @@ export class SessionsPage extends Page {
     render() {
         let profile = this.userProfileModule.userProfile
         document.querySelector('#router-view').innerHTML = `
+                <new-kookkie></new-kookkie>
                 <style>
                     .kookkie-name {padding-right: 2em;}
                     li {}
                 </style>
                 <p class="profile-header"> ${profile.name} </p>
                 <h1>Sessions</h1>
-                <ul id="kookkies-listt">
+                <ul id="kookkies-list">
                      ${this.kookkies.map(k => {
             return `<li id="${k.id}"><a href="#/session/${k.id}"><span class="kookkie-name">${k.name}</span>
                                 <span class="kook-name">${k.kook_name}</span></a></li>`

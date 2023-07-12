@@ -14,6 +14,7 @@ import {ParticipantModule} from "./modules/participant-module.js";
 import {JitsiVideo} from "./components/jitsi-video.js";
 import {ApiBasedKookkieJoiner} from "./adapters/api-based-kookkie-joiner.js";
 import {defineComponent} from "./components/component.js";
+import {NewKookkie} from "./components/new-kookkie.js";
 
 const router = new Router(window)
 const http = new FetchBasedHTTP();
@@ -23,6 +24,7 @@ const authenticationModule = new AuthenticationModule(userProfileModule, new Api
 const kookkiesModule = new KookkiesModule(new ApiBasedKookkiesRepository(http));
 defineComponent(SignInPage(authenticationModule));
 defineComponent(JitsiVideo());
+defineComponent(NewKookkie(kookkiesModule))
 const sessionsPage = new SessionsPage(kookkiesModule, userProfileModule);
 const sessionPage = new SessionPage(kookkiesModule, userProfileModule);
 const sessionJoinPage = new SessionJoinPage(new ParticipantModule(new ApiBasedKookkieJoiner(http)));

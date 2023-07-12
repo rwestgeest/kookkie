@@ -22,8 +22,12 @@ export class Component extends HTMLElement {
         return this._root;
     }
 
+    get scopedDocument() {
+        return this._root;
+    }
+
     elementById(id) {
-        return this.root.getElementById(id);
+        return this.scopedDocument.getElementById(id);
     }
 
     render(params) {

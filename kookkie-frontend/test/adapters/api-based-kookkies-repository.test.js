@@ -39,4 +39,25 @@ describe(ApiBasedKookkiesRepository, () => {
         });
     });
 
+    describe('createing kookkies', () => {
+        it('succeeds when api responds with created', async () => {
+            http.onPost('/api/kookkie-sessions', {
+                    date: "2023-06-07",
+                    name: "Lekker eten met anton"
+                }).reply(201, {});
+            const kookkies = await kookkiesRepo.create({
+                date: "2023-06-07",
+                name: "Lekker eten met anton"
+            });
+            expect(kookkies).toEqual({});
+        });
+
+        it('fails when api responds with failure', async () => {
+            http.onPost('/api/kookkie-sessions', {}).reply(401, {message: "unauthorized"});
+            expect(kookkiesRepo.create({})).rejects.toEqual(
+                {message: "unable to create kookkie session"}
+            );
+        });
+    });
+
 });

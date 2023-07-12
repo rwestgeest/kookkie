@@ -28,4 +28,10 @@ export class KookkiesModule extends ObservableModel {
     async start(kookkieId) {
         return await this._kookkiesRepository.start(kookkieId);
     }
+    async create(kookkieCreationParameters){
+        return await this._kookkiesRepository.create(kookkieCreationParameters)
+            .catch(e => {
+                this.errorMessage = e.messageId;
+            });
+    }
 }
