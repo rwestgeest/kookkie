@@ -68,7 +68,7 @@ def aValidKookMessage(**kwargs) -> Message:
 
 
 def validKookkieSessionCreationParameters(**kwargs):
-    return {**dict(date='the date', participant_count='10', kook=aValidKook()), **kwargs}
+    return {**dict(date='the date', name='the meal', kook=aValidKook()), **kwargs}
 
 
 def validKookCreationParameters(**kwargs):

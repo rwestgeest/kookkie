@@ -12,38 +12,36 @@ class TestCreateWithId:
         self.creator = KookkieSessionCreator(id_generator = self.id_generator, clock=self.clock)
 
     def test_creates_an_event_with_a_timestamp(self):
-        event = self.creator.create_with_id(date="date", participant_count='2',
+        event = self.creator.create_with_id(date="date", name='my meal',
                                             kook=aValidKook()).kookkie_session_created
         assert event.timestamp == self.clock.now()
 
     def test_creates_a_kookkie_session_with_a_generated_id(self):
-        kookkie_session = self.creator.create_with_id(date="date", participant_count='2',
+        kookkie_session = self.creator.create_with_id(date="date", name='my meal',
                                                          kook=aValidKook()).kookkie_session_created.kookkie_session
         assert kookkie_session.id == aValidID('12')
 
     def test_assigns_all_other_attributes(self):
         kookkie_session = self.creator.create_with_id(
             date="date",
-            participant_count='10',
+            name='my meal',
             kook=aValidKook()).kookkie_session_created.kookkie_session
         assert kookkie_session.date == "date"
+        assert kookkie_session.name == "my meal"
         assert kookkie_session.kook_id == aValidID('100')
         assert kookkie_session.kook_name == 'F. Kook'
 
     def test_fails_when_date_is_not_present(self):
         assert self.creator.create_with_id(**validKookkieSessionCreationParameters(date=None)) == Failure(message='date is missing')
 
-    def test_fails_when_participant_count_is_not_present(self):
-        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count=None)) == Failure(message='participant_count is missing')
+    def test_fails_when_date_is_empty(self):
+        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(date='')) == Failure(message='date is empty')
 
-    def test_fails_when_participant_count_is_not_an_integer(self):
-        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count='bla')) == Failure(message='participant_count is not an integer value')
+    def test_fails_when_name_is_not_present(self):
+        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(name=None)) == Failure(message='name is missing')
 
-    def test_fafils_when_participant_count_is_more_than_30(self):
-        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count='31')) == Failure(message='participant_count should be between 1 and 30')
-
-    def test_fails_when_participant_count_is_less_than_1(self):
-        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(participant_count='-1')) == Failure(message='participant_count should be between 1 and 30')
+    def test_fails_when_name_is_empty(self):
+        assert self.creator.create_with_id(**validKookkieSessionCreationParameters(name="")) == Failure(message='name is empty')
 
     def test_fails_when_kook_is_not_present(self):
         assert self.creator.create_with_id(**validKookkieSessionCreationParameters(kook=None)) == Failure(message='kook is missing')

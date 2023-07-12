@@ -5,7 +5,7 @@ from typing import Union
 
 from quiltz.domain.id import ID, IDGenerator
 from quiltz.domain.results import Success, Failure, Result
-from quiltz.domain.validator import validate, presence_of, is_between
+from quiltz.domain.validator import validate, presence_of, is_between, Validator
 
 from .clock import Clock
 
@@ -31,22 +31,25 @@ class KookkieParticipant:
 
 class KookkieSessionCreator:
     def __init__(self, id_generator=IDGenerator(), clock=Clock()):
-        self.id_generator=id_generator
+        self.id_generator = id_generator
         self.clock = clock
 
-    def create_with_id(self, date=None, participant_count=0, kook=None, language="en"):
+    def create_with_id(self, date=None, name=None, kook=None, language="en"):
         return validate(
             presence_of('date', date),
+            presence_of('name', name),
             presence_of('kook', kook),
-            is_between('participant_count', participant_count, 1, MAX_NUMBER_OF_PARTICIPANTS),
+            non_emptyness_of('name', name),
+            non_emptyness_of('date', date)
         ).map(lambda valid_parameters:
-            Success(kookkie_session_created=KookkieSessionCreated(timestamp=self.clock.now(),
-                                                                     kookkie_session=KookkieSession(
-                id = self.id_generator.generate_id(),
-                date = valid_parameters.date,
-                kook_id=valid_parameters.kook.id,
-                kook_name=valid_parameters.kook.name)))
-        )
+              Success(kookkie_session_created=KookkieSessionCreated(timestamp=self.clock.now(),
+                                                                    kookkie_session=KookkieSession(
+                                                                        id=self.id_generator.generate_id(),
+                                                                        date=valid_parameters.date,
+                                                                        name=valid_parameters.name,
+                                                                        kook_id=valid_parameters.kook.id,
+                                                                        kook_name=valid_parameters.kook.name)))
+              )
 
 
 @dataclass(frozen=True)
@@ -55,7 +58,6 @@ class KookkieSessionListItem:
     date: date
     kook_name: str
     name: str
-
 
 
 @dataclass(init=False)
@@ -67,12 +69,11 @@ class KookkieSession(object):
     kook_name: str
     _open: bool
 
-
     def __init__(self, id: ID,
                  date,
                  kook_id: ID,
                  kook_name: str,
-                 name: str = "lekker koken",
+                 name: str,
                  open=False):
         self.id = id
         self.name = name
@@ -123,7 +124,6 @@ class JoinInfo:
     room_name: str
 
 
-
 @dataclass(frozen=True)
 class KookkieSessionEvent:
     kookkie_session: KookkieSession
@@ -145,3 +145,17 @@ class KookkieSessionCreated(KookkieSessionEvent):
 @dataclass(frozen=True)
 class KookkieSessionWasDeleted(KookkieSessionEvent):
     pass
+
+
+
+def non_emptyness_of(parameter, value):
+    return NonEmptynessOf(parameter, value)
+
+
+class NonEmptynessOf(Validator):
+    def validate(self, results):
+        if self.value.strip() == '':
+            return Failure(message="{} is empty".format(self.parameter_name))
+        results.add(self.parameter_name, self.value)
+        return Success()
+

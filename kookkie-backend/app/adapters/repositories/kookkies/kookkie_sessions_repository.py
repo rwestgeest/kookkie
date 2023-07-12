@@ -156,6 +156,7 @@ def as_kookkie_session(record: KookkieSessionRecord) -> KookkieSession:
     return KookkieSession(
         id=ID.from_string(record.id),
         date=record.date,
+        name=record.name,
         kook_id=ID.from_string(record.kook_id),
         kook_name=record.kook_name,
         open=record.open)  # type: ignore
